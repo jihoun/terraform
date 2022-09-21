@@ -95,6 +95,9 @@ resource "aws_kms_key" "cloudtrail" {
     "Version": "2012-10-17"
   }
   JSON
+  depends_on = [
+    aws_s3_bucket_policy.log_bucket_policy
+  ]
 }
 
 resource "aws_kms_alias" "cloudtrail" {

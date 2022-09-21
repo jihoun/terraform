@@ -1,10 +1,6 @@
-data "aws_iam_role" "config" {
-  name = "AWSServiceRoleForConfig"
-}
-
 resource "aws_config_configuration_recorder" "config" {
   name     = "default"
-  role_arn = data.aws_iam_role.config.arn
+  role_arn = aws_iam_role.config.arn
 
   recording_group {
     all_supported                 = true
