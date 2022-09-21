@@ -1,6 +1,7 @@
 resource "aws_backup_plan" "plan" {
-  name = "backup-plan-${terraform.workspace}"
-  tags = var.tags
+  count = var.backup_plan ? 1 : 0
+  name  = "backup-plan-${terraform.workspace}"
+  tags  = var.tags
 
   rule {
     completion_window        = 10080
@@ -50,9 +51,10 @@ resource "aws_iam_role_policy_attachment" "backup_AWSBackupServiceRolePolicyForR
 }
 
 resource "aws_backup_selection" "dynamodb" {
+  count        = var.backup_plan ? 1 : 0
   iam_role_arn = aws_iam_role.backup.arn
   name         = "dynamodb"
-  plan_id      = aws_backup_plan.plan.id
+  plan_id      = aws_backup_plan.plan[0].id
 
   resources = ["arn:aws:dynamodb:*:*:table/*"]
 }
