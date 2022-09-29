@@ -26,7 +26,7 @@ resource "aws_api_gateway_integration" "method" {
   passthrough_behavior    = "WHEN_NO_MATCH"
   integration_http_method = "POST"
   content_handling        = "CONVERT_TO_TEXT"
-  uri                     = data.aws_lambda_function.lambda_function.invoke_arn
+  uri                     = "arn:aws:apigateway:${data.aws_region.current.name}:lambda:path/2015-03-31/functions/arn:aws:lambda:${data.aws_region.current.name}:${data.aws_caller_identity.current.account_id}:function:${var.function_name}/invocations"
   depends_on              = [aws_api_gateway_method.method]
 }
 

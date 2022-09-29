@@ -32,7 +32,7 @@ module "method" {
 resource "aws_api_gateway_deployment" "deploy" {
   rest_api_id = aws_api_gateway_rest_api.api.id
   # trigger a redeployment on every apply
-  # stage_description = "Deployed at ${timestamp()}"
+  stage_description = "Deployed at ${timestamp()}"
 
   triggers = {
     redeployment = sha1(jsonencode(aws_api_gateway_rest_api.api.body))
