@@ -40,7 +40,7 @@ resource "aws_api_gateway_deployment" "deploy" {
 
   lifecycle {
     create_before_destroy = true
-    ignore_changes        = [stage_description]
+    # ignore_changes        = [stage_description]
   }
   depends_on = [
     module.method
