@@ -39,6 +39,7 @@ resource "aws_cloudfront_distribution" "cloudfront" {
   is_ipv6_enabled = true
   tags            = var.tags
   comment         = "Used for ${var.name} (${terraform.workspace}) cdn"
+  aliases         = var.domain_names
 
   origin {
     connection_attempts = 3
@@ -73,7 +74,10 @@ resource "aws_cloudfront_distribution" "cloudfront" {
   }
 
   viewer_certificate {
-    cloudfront_default_certificate = true
+    cloudfront_default_certificate = var.certificate_arn == null
+    acm_certificate_arn            = var.certificate_arn
+    minimum_protocol_version       = var.certificate_arn != null ? "TLSv1.2_2021" : "TLSv1"
+    ssl_support_method             = var.certificate_arn != null ? "sni-only" : null
   }
 
   dynamic "logging_config" {
@@ -132,4 +136,18 @@ resource "aws_s3_bucket_website_configuration" "website_configuration" {
   bucket = data.aws_s3_bucket.bucket.id
   index_document { suffix = "index.html" }
   error_document { key = "index.html" }
+}
+
+resource "aws_route53_record" "www" {
+  for_each = toset(var.domain_names)
+  zone_id  = var.hosted_zone_id
+  name     = each.key
+  type     = "A"
+  # ttl      = 0
+  # records = []
+  alias {
+    evaluate_target_health = false
+    name                   = aws_cloudfront_distribution.cloudfront.domain_name
+    zone_id                = aws_cloudfront_distribution.cloudfront.hosted_zone_id
+  }
 }
