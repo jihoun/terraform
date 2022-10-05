@@ -60,7 +60,7 @@ resource "aws_cloudfront_distribution" "cloudfront" {
   default_cache_behavior {
     cache_policy_id          = data.aws_cloudfront_cache_policy.Managed_CachingOptimized.id
     origin_request_policy_id = data.aws_cloudfront_origin_request_policy.Managed_CORS_S3Origin.id
-    viewer_protocol_policy   = "https-only"
+    viewer_protocol_policy   = "redirect-to-https"
     target_origin_id         = data.aws_s3_bucket.bucket.bucket
     cached_methods           = ["GET", "HEAD"]
     allowed_methods          = ["GET", "HEAD", "OPTIONS"]
