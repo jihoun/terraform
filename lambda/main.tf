@@ -25,6 +25,8 @@ resource "aws_lambda_function" "fn" {
   source_code_hash = data.archive_file.archive.output_base64sha256
   filename         = data.archive_file.archive.output_path
   memory_size      = var.memory_size
+  description      = "Managed by terraform for ${terraform.workspace} environment."
+
   environment {
     variables = var.environment_variables
   }
