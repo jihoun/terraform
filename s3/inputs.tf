@@ -17,3 +17,8 @@ variable "tags" {
   type    = map(string)
   default = {}
 }
+
+variable "cors" {
+  type    = bool
+  default = false
+}

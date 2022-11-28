@@ -15,15 +15,16 @@ locals {
   name = "${var.name}_${terraform.workspace}"
 }
 resource "aws_lambda_function" "fn" {
-  role             = aws_iam_role.role.arn
+  count            = var.enabled ? 1 : 0
+  role             = aws_iam_role.role[0].arn
   function_name    = local.name
   handler          = var.handler
   runtime          = var.runtime
   tags             = var.tags
   publish          = true
   timeout          = var.timeout
-  source_code_hash = data.archive_file.archive.output_base64sha256
-  filename         = data.archive_file.archive.output_path
+  source_code_hash = data.archive_file.archive[0].output_base64sha256
+  filename         = data.archive_file.archive[0].output_path
   memory_size      = var.memory_size
   description      = "Managed by terraform for ${terraform.workspace} environment."
 
@@ -33,6 +34,7 @@ resource "aws_lambda_function" "fn" {
 }
 
 resource "aws_iam_role" "role" {
+  count              = var.enabled ? 1 : 0
   name_prefix        = "lambda_${var.name}_${terraform.workspace}"
   tags               = var.tags
   assume_role_policy = <<-EOF
@@ -52,13 +54,15 @@ resource "aws_iam_role" "role" {
 }
 
 data "archive_file" "archive" {
+  count       = var.enabled ? 1 : 0
   type        = "zip"
   source_dir  = var.dir
   output_path = "${path.module}/.tmp/${md5(var.dir)}.zip"
 }
 
 resource "aws_iam_role_policy_attachment" "test-attach" {
-  role       = aws_iam_role.role.id
+  count      = var.enabled ? 1 : 0
+  role       = aws_iam_role.role[0].id
   policy_arn = "arn:aws:iam::aws:policy/service-role/AWSLambdaBasicExecutionRole"
 }
 
@@ -67,14 +71,16 @@ locals {
 }
 
 module "log_key" {
+  count          = var.enabled ? 1 : 0
   source         = "../log_key"
   log_group_name = local.log_group_name
   tags           = var.tags
 }
 
 resource "aws_cloudwatch_log_group" "yada" {
+  count             = var.enabled ? 1 : 0
   name              = local.log_group_name
   retention_in_days = 365
   tags              = var.tags
-  kms_key_id        = module.log_key.key_arn
+  kms_key_id        = module.log_key[0].key_arn
 }

@@ -35,3 +35,8 @@ variable "hosted_zone_id" {
   default     = null
   description = "Required when domain_names is specified and it should obviously match the domain name."
 }
+
+variable "cors" {
+  type    = bool
+  default = false
+}

@@ -61,3 +61,14 @@ resource "aws_s3_object" "files" {
   content_type = length(regexall("\\.[^.]+$", each.key)) > 0 ? lookup(local.mime_types, regex("\\.[^.]+$", each.key), null) : null
   etag         = filemd5("${var.dir}/${each.key}")
 }
+
+resource "aws_s3_bucket_cors_configuration" "bucket" {
+  count  = var.cors ? 1 : 0
+  bucket = aws_s3_bucket.bucket.id
+
+  cors_rule {
+    allowed_methods = ["GET"]
+    allowed_origins = ["*"]
+    allowed_headers = ["*"]
+  }
+}

@@ -36,3 +36,8 @@ variable "timeout" {
   type        = number
   description = "Max duration in seconds per execution"
 }
+
+variable "enabled" {
+  type    = bool
+  default = true
+}
