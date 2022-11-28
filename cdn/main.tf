@@ -13,6 +13,7 @@ module "bucket" {
   dir        = var.dir
   log_bucket = var.log_bucket
   tags       = var.tags
+  cors       = var.cors
 }
 
 data "aws_s3_bucket" "bucket" {
@@ -149,5 +150,42 @@ resource "aws_route53_record" "www" {
     evaluate_target_health = false
     name                   = aws_cloudfront_distribution.cloudfront.domain_name
     zone_id                = aws_cloudfront_distribution.cloudfront.hosted_zone_id
+  }
+}
+
+module "invalidation_lambda" {
+  source  = "../lambda"
+  dir     = "${path.module}/cloudfront-lambda"
+  name    = "cf-${var.name}-invalidation"
+  timeout = 30
+  environment_variables = {
+    DISTRIBUTION_ID = aws_cloudfront_distribution.cloudfront.id
+  }
+}
+
+
+data "aws_iam_policy_document" "policy_doc" {
+  statement {
+    actions   = ["cloudfront:CreateInvalidation"]
+    resources = [aws_cloudfront_distribution.cloudfront.arn]
+  }
+}
+
+resource "aws_iam_policy" "invalidation_policy" {
+  name_prefix = "${var.name}_cf_invalidate_${terraform.workspace}"
+  policy      = data.aws_iam_policy_document.policy_doc.json
+  tags        = var.tags
+}
+
+resource "aws_iam_role_policy_attachment" "invalidation_role" {
+  policy_arn = aws_iam_policy.invalidation_policy.arn
+  role       = module.invalidation_lambda.role_name
+}
+
+resource "aws_lambda_invocation" "cloudfront_invalidate" {
+  function_name = module.invalidation_lambda.function_name
+  input         = jsonencode({})
+  triggers = {
+    redeployment = module.bucket.files_hash
   }
 }
