@@ -1,15 +1,15 @@
 output "role_name" {
-  value = aws_iam_role.role.id
+  value = var.enabled ? aws_iam_role.role[0].id : ""
 }
 
 output "role_arn" {
-  value = aws_iam_role.role.arn
+  value = var.enabled ? aws_iam_role.role[0].arn : ""
 }
 
 output "function_name" {
-  value = aws_lambda_function.fn.function_name
+  value = var.enabled ? aws_lambda_function.fn[0].function_name : ""
 }
 
 output "function_arn" {
-  value = aws_lambda_function.fn.arn
+  value = var.enabled ? aws_lambda_function.fn[0].arn : ""
 }
