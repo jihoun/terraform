@@ -2,7 +2,7 @@ const AWS = require("aws-sdk");
 
 const cloudfront = new AWS.CloudFront();
 
-const DistributionId = process.env.DISTRIBUTION_ID || "EMES8J60RWF85";
+const DistributionId = process.env.DISTRIBUTION_ID || "";
 
 exports.handler = async function (event) {
   const params = {
