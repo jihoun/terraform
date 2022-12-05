@@ -30,7 +30,7 @@ data "aws_cloudfront_origin_request_policy" "Managed_CORS_S3Origin" {
   name = "Managed-CORS-S3Origin"
 }
 data "aws_cloudfront_response_headers_policy" "Managed_CORS_With_Preflight" {
-  name = "Managed-CORS-With-Preflight"
+  name = "Managed-SimpleCORS"
 }
 resource "aws_cloudfront_origin_access_identity" "origin_access_identity" {
   comment = "Used for ${var.name}-${terraform.workspace} cdn"
@@ -66,7 +66,7 @@ resource "aws_cloudfront_distribution" "cloudfront" {
     response_headers_policy_id = var.cors ? data.aws_cloudfront_response_headers_policy.Managed_CORS_With_Preflight.id : null
     viewer_protocol_policy     = "redirect-to-https"
     target_origin_id           = data.aws_s3_bucket.bucket.bucket
-    cached_methods             = ["GET", "HEAD"]
+    cached_methods             = ["GET", "HEAD", "OPTIONS"]
     allowed_methods            = ["GET", "HEAD", "OPTIONS"]
     compress                   = true
   }
