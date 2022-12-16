@@ -40,3 +40,8 @@ variable "web_acl_arn" {
   type    = string
   default = null
 }
+
+variable "cache" {
+  type    = bool
+  default = false
+}
