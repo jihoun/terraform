@@ -53,7 +53,7 @@ resource "aws_api_gateway_stage" "stage" {
   stage_name            = var.stage_name
   xray_tracing_enabled  = true
   client_certificate_id = aws_api_gateway_client_certificate.certificate.id
-  # cache_cluster_enabled = true
+  cache_cluster_enabled = var.cache ? true : null
   # cache_cluster_size    = "0.5"
   depends_on = [aws_cloudwatch_log_group.log]
   lifecycle {
