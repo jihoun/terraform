@@ -20,13 +20,14 @@ module "cors" {
 }
 
 module "method" {
-  source           = "../gw_method_lambda"
-  rest_api_id      = aws_api_gateway_rest_api.api.id
-  resource_id      = aws_api_gateway_resource.proxy.id
-  function_name    = var.function_name
-  authorization    = var.cognito != null ? "COGNITO_USER_POOLS" : "NONE"
-  authorizer_id    = var.cognito != null ? aws_api_gateway_authorizer.cognito_auth[0].id : null
-  api_key_required = var.requires_key
+  source               = "../gw_method_lambda"
+  rest_api_id          = aws_api_gateway_rest_api.api.id
+  resource_id          = aws_api_gateway_resource.proxy.id
+  function_name        = var.function_name
+  authorization        = var.cognito != null ? "COGNITO_USER_POOLS" : "NONE"
+  authorizer_id        = var.cognito != null ? aws_api_gateway_authorizer.cognito_auth[0].id : null
+  api_key_required     = var.requires_key
+  cache_key_parameters = var.cache_key_parameters
 }
 
 resource "aws_api_gateway_deployment" "deploy" {
@@ -54,6 +55,7 @@ resource "aws_api_gateway_stage" "stage" {
   xray_tracing_enabled  = true
   client_certificate_id = aws_api_gateway_client_certificate.certificate.id
   cache_cluster_enabled = var.cache ? true : null
+  cache_cluster_size    = var.cache ? 1.6 : null
   # cache_cluster_size    = "0.5"
   depends_on = [aws_cloudwatch_log_group.log]
   lifecycle {
@@ -90,12 +92,12 @@ resource "aws_api_gateway_method_settings" "general_settings" {
     logging_level      = "INFO"
 
     # Limit the rate of calls to prevent abuse and unwanted charges
-    throttling_rate_limit  = 100
-    throttling_burst_limit = 50
+    throttling_rate_limit  = 1000
+    throttling_burst_limit = 500
 
     #cache
-    # cache_data_encrypted = true
-    # cache_ttl_in_seconds = 300 # 5 minutes
+    cache_data_encrypted = var.cache ? true : null
+    cache_ttl_in_seconds = var.cache ? 300 : null # 5 minutes
   }
 
   depends_on = [aws_api_gateway_stage.stage]
