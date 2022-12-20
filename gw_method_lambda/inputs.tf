@@ -29,3 +29,8 @@ variable "api_key_required" {
   type    = bool
   default = false
 }
+
+variable "cache_key_parameters" {
+  type    = list(string)
+  default = []
+}
