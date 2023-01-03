@@ -1,5 +1,5 @@
 output "url" {
-  value = "https://${aws_cloudfront_distribution.cloudfront.domain_name}"
+  value = length(var.domain_names) > 0 ? "https://${var.domain_names[0]}" : "https://${aws_cloudfront_distribution.cloudfront.domain_name}"
 }
 
 output "bucket_name" {
