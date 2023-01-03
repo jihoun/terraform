@@ -1,9 +1,9 @@
 output "bucket_name" {
-  value = aws_s3_bucket.bucket.bucket
+  value = var.enabled ? aws_s3_bucket.bucket[0].bucket : null
 }
 
 output "bucket_arn" {
-  value = aws_s3_bucket.bucket.arn
+  value = var.enabled ? aws_s3_bucket.bucket[0].arn : null
 }
 
 output "files_hash" {

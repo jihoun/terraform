@@ -10,12 +10,14 @@ terraform {
 # data "aws_caller_identity" "current" {}
 
 resource "aws_s3_bucket" "bucket" {
+  count         = var.enabled ? 1 : 0
   bucket_prefix = "${var.name}-${terraform.workspace}"
   tags          = var.tags
 }
 
 resource "aws_s3_bucket_server_side_encryption_configuration" "sse" {
-  bucket = aws_s3_bucket.bucket.id
+  count  = var.enabled ? 1 : 0
+  bucket = aws_s3_bucket.bucket[0].id
 
   rule {
     apply_server_side_encryption_by_default {
@@ -25,21 +27,21 @@ resource "aws_s3_bucket_server_side_encryption_configuration" "sse" {
 }
 
 resource "aws_s3_bucket_logging" "logging" {
-  count = var.log_bucket != null ? 1 : 0
-
-  bucket = aws_s3_bucket.bucket.id
-
+  count         = var.enabled && var.log_bucket != null ? 1 : 0
+  bucket        = aws_s3_bucket.bucket[0].id
   target_bucket = var.log_bucket
-  target_prefix = "s3/${aws_s3_bucket.bucket.id}/"
+  target_prefix = "s3/${aws_s3_bucket.bucket[0].id}/"
 }
 
 resource "aws_s3_bucket_acl" "acl" {
-  bucket = aws_s3_bucket.bucket.id
+  count  = var.enabled ? 1 : 0
+  bucket = aws_s3_bucket.bucket[0].id
   acl    = "private"
 }
 
 resource "aws_s3_bucket_public_access_block" "public_access" {
-  bucket = aws_s3_bucket.bucket.id
+  count  = var.enabled ? 1 : 0
+  bucket = aws_s3_bucket.bucket[0].id
 
   block_public_acls       = true
   block_public_policy     = true
@@ -47,15 +49,16 @@ resource "aws_s3_bucket_public_access_block" "public_access" {
   restrict_public_buckets = true
 }
 resource "aws_s3_bucket_versioning" "versioning_example" {
-  bucket = aws_s3_bucket.bucket.id
+  count  = var.enabled ? 1 : 0
+  bucket = aws_s3_bucket.bucket[0].id
   versioning_configuration {
     status = "Enabled"
   }
 }
 
 resource "aws_s3_object" "files" {
-  for_each     = var.dir != null ? fileset(var.dir, "**") : toset([])
-  bucket       = aws_s3_bucket.bucket.id
+  for_each     = var.dir != null && var.enabled ? fileset(var.dir, "**") : toset([])
+  bucket       = aws_s3_bucket.bucket[0].id
   key          = each.key
   source       = "${var.dir}/${each.key}"
   content_type = length(regexall("\\.[^.]+$", each.key)) > 0 ? lookup(local.mime_types, regex("\\.[^.]+$", each.key), null) : null
@@ -63,8 +66,8 @@ resource "aws_s3_object" "files" {
 }
 
 resource "aws_s3_bucket_cors_configuration" "bucket" {
-  count  = var.cors ? 1 : 0
-  bucket = aws_s3_bucket.bucket.id
+  count  = var.cors && var.enabled ? 1 : 0
+  bucket = aws_s3_bucket.bucket[0].id
 
   cors_rule {
     allowed_methods = ["GET"]

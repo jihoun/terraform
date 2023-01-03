@@ -1,11 +1,13 @@
 
 module "terraform_bucket" {
+  enabled    = var.enabled
   source     = "../s3"
   name       = "terraform"
   log_bucket = var.log_bucket
 }
 
 resource "aws_dynamodb_table" "terraform" {
+  count        = var.enabled ? 1 : 0
   name         = "terraform-${terraform.workspace}"
   billing_mode = "PAY_PER_REQUEST"
   hash_key     = "LockID"
@@ -25,6 +27,7 @@ resource "aws_dynamodb_table" "terraform" {
 }
 
 resource "aws_iam_policy" "terraform" {
+  count       = var.enabled ? 1 : 0
   name_prefix = "terraform-${terraform.workspace}"
   policy      = <<-POLICY
   {
@@ -47,7 +50,7 @@ resource "aws_iam_policy" "terraform" {
           "dynamodb:PutItem",
           "dynamodb:DeleteItem"
         ],
-        "Resource": "${aws_dynamodb_table.terraform.arn}"
+        "Resource": "${aws_dynamodb_table.terraform[0].arn}"
       }
     ]
   }
