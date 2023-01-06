@@ -56,8 +56,8 @@ resource "aws_api_gateway_stage" "stage" {
   client_certificate_id = aws_api_gateway_client_certificate.certificate.id
   cache_cluster_enabled = var.cache ? true : null
   cache_cluster_size    = var.cache ? 1.6 : null
-  # cache_cluster_size    = "0.5"
-  depends_on = [aws_cloudwatch_log_group.log]
+  depends_on            = [aws_cloudwatch_log_group.log]
+  tags                  = var.tags
   lifecycle {
     ignore_changes = [cache_cluster_size]
   }
