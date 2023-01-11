@@ -29,7 +29,7 @@ resource "aws_lambda_function" "fn" {
   description      = "Managed by terraform for ${terraform.workspace} environment."
 
   environment {
-    variables = var.environment_variables
+    variables = merge({ NO_COLOR = true }, var.environment_variables)
   }
 }
 
