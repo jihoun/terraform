@@ -41,9 +41,16 @@ variable "web_acl_arn" {
   default = null
 }
 
-variable "cache" {
-  type    = bool
-  default = false
+variable "cache_size" {
+  type        = number
+  default     = null
+  description = "If cache_ttl is defined but not this, it will default to 0.5."
+}
+
+variable "cache_ttl" {
+  type        = number
+  default     = null
+  description = "If cache_size is defined but not this, it will default to 300."
 }
 
 variable "cache_key_parameters" {

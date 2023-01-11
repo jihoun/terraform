@@ -1,3 +1,8 @@
+locals {
+  cache      = var.cache_size != null || var.cache_ttl != null
+  cache_ttl  = var.cache_ttl != null ? var.cache_ttl : 300
+  cache_size = var.cache_size != null ? var.cache_size : 0.5
+}
 
 resource "aws_api_gateway_rest_api" "api" {
   name               = "${var.name}-${terraform.workspace}"
@@ -54,13 +59,10 @@ resource "aws_api_gateway_stage" "stage" {
   stage_name            = var.stage_name
   xray_tracing_enabled  = true
   client_certificate_id = aws_api_gateway_client_certificate.certificate.id
-  cache_cluster_enabled = var.cache ? true : null
-  cache_cluster_size    = var.cache ? 1.6 : null
+  cache_cluster_enabled = local.cache ? true : null
+  cache_cluster_size    = local.cache ? local.cache_size : null
   depends_on            = [aws_cloudwatch_log_group.log]
   tags                  = var.tags
-  lifecycle {
-    ignore_changes = [cache_cluster_size]
-  }
 }
 
 locals {
@@ -96,8 +98,8 @@ resource "aws_api_gateway_method_settings" "general_settings" {
     throttling_burst_limit = 500
 
     #cache
-    cache_data_encrypted = var.cache ? true : null
-    cache_ttl_in_seconds = var.cache ? 300 : null # 5 minutes
+    cache_data_encrypted = local.cache ? true : null
+    cache_ttl_in_seconds = local.cache ? local.cache_ttl : null # 5 minutes
   }
 
   depends_on = [aws_api_gateway_stage.stage]
