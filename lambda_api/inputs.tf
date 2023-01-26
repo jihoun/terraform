@@ -76,3 +76,8 @@ variable "trace" {
   type    = bool
   default = false
 }
+
+variable "log_retention" {
+  type    = number
+  default = 60
+}

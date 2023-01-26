@@ -81,7 +81,7 @@ module "log_key" {
 resource "aws_cloudwatch_log_group" "yada" {
   count             = var.enabled ? 1 : 0
   name              = local.log_group_name
-  retention_in_days = 365
+  retention_in_days = var.log_retention
   tags              = var.tags
   kms_key_id        = module.log_key[0].key_arn
 }

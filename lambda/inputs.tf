@@ -41,3 +41,8 @@ variable "enabled" {
   type    = bool
   default = true
 }
+
+variable "log_retention" {
+  type    = number
+  default = 60
+}
