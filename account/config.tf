@@ -22,9 +22,17 @@ resource "aws_config_configuration_recorder_status" "enabled" {
   depends_on = [aws_config_delivery_channel.s3]
 }
 
+locals {
+  sample_packs = {
+    s3          = "${path.module}/config-sample-packs/Operational-Best-Practices-for-Amazon-S3.yaml",
+    reliability = "${path.module}/config-sample-packs/Operational-Best-Practices-for-AWS-Well-Architected-Reliability-Pillar.yaml"
+    security    = "${path.module}/config-sample-packs/Operational-Best-Practices-for-AWS-Well-Architected-Security-Pillar.yaml"
+    serverless  = "${path.module}/config-sample-packs/Operational-Best-Practices-for-Serverless.yaml"
+  }
+}
 resource "aws_config_conformance_pack" "Operational-Best-Practices-for-Serverless" {
-  for_each      = fileset("${path.module}/config-sample-packs", "*.yaml")
-  name          = trimsuffix(each.key, ".yaml")
-  template_body = file("${path.module}/config-sample-packs/${each.value}")
+  for_each      = toset(var.config_packs)
+  name          = each.key
+  template_body = file(local.sample_packs[each.key])
   depends_on    = [aws_config_configuration_recorder.config]
 }

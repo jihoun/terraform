@@ -57,3 +57,22 @@ variable "cache_key_parameters" {
   type    = list(string)
   default = []
 }
+
+variable "logging_level" {
+  type    = string
+  default = "ERROR"
+  validation {
+    condition     = contains(["OFF", "ERROR", "INFO"], self)
+    error_message = "Must be one of OFF, ERROR, INFO"
+  }
+}
+
+variable "metrics" {
+  type    = bool
+  default = false
+}
+
+variable "trace" {
+  type    = bool
+  default = false
+}

@@ -36,8 +36,7 @@ module "method" {
 }
 
 resource "aws_api_gateway_deployment" "deploy" {
-  rest_api_id = aws_api_gateway_rest_api.api.id
-  # trigger a redeployment on every apply
+  rest_api_id       = aws_api_gateway_rest_api.api.id
   stage_description = "Deployed at ${timestamp()}"
 
   triggers = {
@@ -46,18 +45,16 @@ resource "aws_api_gateway_deployment" "deploy" {
 
   lifecycle {
     create_before_destroy = true
-    # ignore_changes        = [stage_description]
+    ignore_changes        = [stage_description]
   }
-  depends_on = [
-    module.method
-  ]
+  depends_on = [module.method]
 }
 
 resource "aws_api_gateway_stage" "stage" {
   deployment_id         = aws_api_gateway_deployment.deploy.id
   rest_api_id           = aws_api_gateway_rest_api.api.id
   stage_name            = var.stage_name
-  xray_tracing_enabled  = true
+  xray_tracing_enabled  = var.trace
   client_certificate_id = aws_api_gateway_client_certificate.certificate.id
   cache_cluster_enabled = local.cache ? true : null
   cache_cluster_size    = local.cache ? local.cache_size : null
@@ -89,9 +86,9 @@ resource "aws_api_gateway_method_settings" "general_settings" {
 
   settings {
     # Enable CloudWatch logging and metrics
-    metrics_enabled    = true
-    data_trace_enabled = true
-    logging_level      = "INFO"
+    metrics_enabled    = var.metrics
+    data_trace_enabled = var.trace
+    logging_level      = var.logging_level
 
     # Limit the rate of calls to prevent abuse and unwanted charges
     throttling_rate_limit  = 1000
