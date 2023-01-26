@@ -10,6 +10,10 @@ variable "backup_plan" {
 
 variable "config_packs" {
   type        = list(string)
-  default     = ["reliability", "s3", "security", "serverless"]
+  default     = null
   description = "List of config sample packs to activate"
+}
+
+locals {
+  config_packs = var.config_packs == null ? ["reliability", "s3", "security", "serverless"] : var.config_packs
 }

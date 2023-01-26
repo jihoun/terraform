@@ -31,7 +31,7 @@ locals {
   }
 }
 resource "aws_config_conformance_pack" "Operational-Best-Practices-for-Serverless" {
-  for_each      = toset(var.config_packs)
+  for_each      = toset(local.config_packs)
   name          = each.key
   template_body = file(local.sample_packs[each.key])
   depends_on    = [aws_config_configuration_recorder.config]
