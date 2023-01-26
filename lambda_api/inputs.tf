@@ -62,7 +62,7 @@ variable "logging_level" {
   type    = string
   default = "ERROR"
   validation {
-    condition     = contains(["OFF", "ERROR", "INFO"], self)
+    condition     = contains(["OFF", "ERROR", "INFO"], var.logging_level)
     error_message = "Must be one of OFF, ERROR, INFO"
   }
 }
