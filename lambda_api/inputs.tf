@@ -21,8 +21,9 @@ variable "stage_name" {
 }
 
 variable "cognito" {
-  type    = string
-  default = null
+  type        = list(string)
+  default     = null
+  description = "Arn of cognito user pools to link to this api"
 }
 
 variable "cors" {

@@ -107,7 +107,7 @@ resource "aws_api_gateway_authorizer" "cognito_auth" {
   rest_api_id   = aws_api_gateway_rest_api.api.id
   name          = "cognito-auth-${terraform.workspace}"
   type          = "COGNITO_USER_POOLS"
-  provider_arns = [var.cognito]
+  provider_arns = var.cognito
 }
 
 resource "aws_api_gateway_usage_plan" "usage_plan" {
