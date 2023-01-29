@@ -32,6 +32,7 @@ module "method" {
   authorizer_id        = var.cognito != null ? aws_api_gateway_authorizer.cognito_auth[0].id : null
   api_key_required     = var.requires_key
   cache_key_parameters = var.cache_key_parameters
+  function_name        = var.function_name
 }
 
 resource "aws_api_gateway_deployment" "deploy" {
