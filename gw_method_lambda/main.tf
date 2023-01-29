@@ -15,10 +15,6 @@ resource "aws_api_gateway_method" "method" {
 
 }
 
-data "aws_lambda_function" "lambda_function" {
-  function_name = var.function_name
-}
-
 data "aws_caller_identity" "current" {}
 data "aws_region" "current" {}
 

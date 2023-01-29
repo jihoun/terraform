@@ -11,10 +11,6 @@ variable "http_method" {
   default = "ANY"
 }
 
-variable "function_name" {
-  type = string
-}
-
 variable "authorization" {
   type    = string
   default = "NONE"
