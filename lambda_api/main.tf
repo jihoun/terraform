@@ -28,7 +28,6 @@ module "method" {
   source               = "../gw_method_lambda"
   rest_api_id          = aws_api_gateway_rest_api.api.id
   resource_id          = aws_api_gateway_resource.proxy.id
-  function_name        = var.function_name
   authorization        = var.cognito != null ? "COGNITO_USER_POOLS" : "NONE"
   authorizer_id        = var.cognito != null ? aws_api_gateway_authorizer.cognito_auth[0].id : null
   api_key_required     = var.requires_key
