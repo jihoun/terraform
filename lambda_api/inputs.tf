@@ -6,6 +6,10 @@ variable "name" {
   type = string
 }
 
+variable "function_name" {
+  type = string
+}
+
 variable "binary_media_types" {
   type    = list(string)
   default = []
