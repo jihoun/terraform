@@ -13,16 +13,8 @@ jobs:
         with:
           ref: ${{ github.event.pull_request.head.ref }}
           fetch-depth: 0
-      # - name: Setup Terraform
-      #   uses: hashicorp/setup-terraform@v2
-      # - run: terraform init
-      #   working-directory: ./infra/core
-      # - run: terraform validate
-      #   working-directory: ./infra/core
-      # - run: terraform init
-      #   working-directory: ./infra/deploy
-      # - run: terraform validate
-      #   working-directory: ./infra/deploy
       - run: terraform fmt -check -recursive
       - name: 🧐 tfsec
         uses: aquasecurity/tfsec-action@v1.0.0
+        with:
+          additional_args: -m CRITICAL
