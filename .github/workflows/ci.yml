@@ -24,3 +24,5 @@ jobs:
       # - run: terraform validate
       #   working-directory: ./infra/deploy
       - run: terraform fmt -check -recursive
+      - name: 🧐 tfsec
+        uses: aquasecurity/tfsec-action@v1.0.0
