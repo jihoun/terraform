@@ -27,6 +27,9 @@ resource "aws_lambda_function" "fn" {
   filename         = data.archive_file.archive[0].output_path
   memory_size      = var.memory_size
   description      = "Managed by terraform for ${terraform.workspace} environment."
+  tracing_config {
+    mode = var.trace ? "Active" : "PassThrough"
+  }
 
   environment {
     variables = merge({ NO_COLOR = true }, var.environment_variables)

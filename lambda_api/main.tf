@@ -60,6 +60,11 @@ resource "aws_api_gateway_stage" "stage" {
   cache_cluster_size    = local.cache ? local.cache_size : null
   depends_on            = [aws_cloudwatch_log_group.log]
   tags                  = var.tags
+
+  settings {
+    metrics_enabled = var.metrics
+    logging_level   = var.logging_level
+  }
 }
 
 locals {
