@@ -37,7 +37,7 @@ module "method" {
 
 resource "aws_api_gateway_deployment" "deploy" {
   rest_api_id       = aws_api_gateway_rest_api.api.id
-  stage_description = "Deployed at ${timestamp()}"
+  stage_description = "Deployed for sha: ${base64sha256(jsonencode(aws_api_gateway_rest_api.api))}"
 
   triggers = {
     redeployment = sha1(jsonencode(aws_api_gateway_rest_api.api.body))
@@ -45,7 +45,6 @@ resource "aws_api_gateway_deployment" "deploy" {
 
   lifecycle {
     create_before_destroy = true
-    ignore_changes        = [stage_description]
   }
   depends_on = [module.method]
 }
