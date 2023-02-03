@@ -82,3 +82,8 @@ variable "log_retention" {
   type    = number
   default = 60
 }
+
+variable "over_deploy" {
+  type    = bool
+  default = false
+}
