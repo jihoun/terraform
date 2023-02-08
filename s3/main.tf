@@ -2,12 +2,10 @@ terraform {
   required_providers {
     aws = {
       source  = "hashicorp/aws"
-      version = "~> 4.31.0"
+      version = "=> 4.31.0"
     }
   }
 }
-# data "aws_region" "current" {}
-# data "aws_caller_identity" "current" {}
 
 resource "aws_s3_bucket" "bucket" {
   count         = var.enabled ? 1 : 0
