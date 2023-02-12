@@ -40,3 +40,8 @@ variable "cors" {
   type    = bool
   default = false
 }
+
+variable "enabled" {
+  type    = bool
+  default = true
+}
