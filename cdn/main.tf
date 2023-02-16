@@ -169,6 +169,7 @@ module "invalidation_lambda" {
   dir     = "${path.module}/cloudfront-lambda"
   name    = "cf-${var.name}-invalidation"
   timeout = 30
+  runtime = "nodejs16.x"
   environment_variables = {
     DISTRIBUTION_ID = var.enabled ? aws_cloudfront_distribution.cloudfront[0].id : ""
   }
