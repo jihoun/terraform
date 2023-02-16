@@ -13,7 +13,7 @@ variable "handler" {
 
 variable "runtime" {
   type    = string
-  default = "nodejs16.x"
+  default = "nodejs18.x"
 }
 
 variable "environment_variables" {
