@@ -28,6 +28,7 @@ locals {
     reliability = "${path.module}/config-sample-packs/Operational-Best-Practices-for-AWS-Well-Architected-Reliability-Pillar.yaml"
     security    = "${path.module}/config-sample-packs/Operational-Best-Practices-for-AWS-Well-Architected-Security-Pillar.yaml"
     serverless  = "${path.module}/config-sample-packs/Operational-Best-Practices-for-Serverless.yaml"
+    hipaa       = "${path.module}/config-sample-packs/Operational-Best-Practices-for-HIPAA-Security.yaml"
   }
 }
 resource "aws_config_conformance_pack" "Operational-Best-Practices-for-Serverless" {
