@@ -1,5 +1,11 @@
 variable "name" {
   type = string
+  validation {
+    # regex(...) fails if it cannot find a match
+    condition     = can(regex("^[a-zA-Z\\d-]+$", var.image_id))
+    error_message = "The name should only contain alpha numerics and hypens"
+  }
+
 }
 
 variable "dir" {
