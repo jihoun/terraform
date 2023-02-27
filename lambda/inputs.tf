@@ -18,7 +18,7 @@ variable "runtime" {
 
 variable "environment_variables" {
   type    = map(string)
-  default = { foo = "bar" }
+  default = {}
 }
 
 variable "tags" {
