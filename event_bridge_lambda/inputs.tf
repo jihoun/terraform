@@ -7,8 +7,11 @@ variable "event_pattern" {
   type = string
 }
 
-variable "lambda_name" {
-  type = string
+variable "lambda" {
+  type = object({
+    name = string
+    arn  = string
+  })
 }
 
 variable "tags" {
