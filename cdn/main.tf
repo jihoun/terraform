@@ -150,7 +150,7 @@ resource "aws_s3_bucket_website_configuration" "website_configuration" {
 }
 
 resource "aws_route53_record" "www" {
-  for_each = toset(var.enabled ? var.domain_names : [])
+  for_each = toset(var.enabled && !var.skip_route_53 ? var.domain_names : [])
   zone_id  = var.hosted_zone_id
   name     = each.key
   type     = "A"

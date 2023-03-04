@@ -45,3 +45,8 @@ variable "enabled" {
   type    = bool
   default = true
 }
+
+variable "skip_route_53" {
+  type    = bool
+  default = false
+}
