@@ -15,7 +15,7 @@ output "api_root_resource_id" {
 }
 
 output "api" {
-  object = var.requires_key ? {
+  value = var.requires_key ? {
     url           = module.aws_api_gateway_stage.stage.invoke_url
     usage_plan_id = aws_api_gateway_usage_plan.usage_plan[0].id
     } : {
