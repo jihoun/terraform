@@ -175,7 +175,6 @@ module "invalidation_lambda" {
   }
 }
 
-
 data "aws_iam_policy_document" "policy_doc" {
   count = var.enabled && var.dir != null ? 1 : 0
   statement {

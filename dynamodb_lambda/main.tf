@@ -28,7 +28,7 @@ resource "aws_lambda_event_source_mapping" "stream_2_lambda" {
   depends_on                         = [aws_iam_role_policy_attachment.role_policy]
   maximum_batching_window_in_seconds = 3   #minimizes number of lambda calls
   batch_size                         = 100 # default dynamodb
-  function_response_types            = ["ReportBatchItemFailures"]
+  function_response_types            = var.reports_errors ? ["ReportBatchItemFailures"] : null
   starting_position                  = "LATEST"
   bisect_batch_on_function_error     = true
 }

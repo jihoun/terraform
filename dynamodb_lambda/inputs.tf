@@ -13,3 +13,8 @@ variable "function_role_name" {
 variable "tags" {
   type = map(string)
 }
+
+variable "reports_errors" {
+  type    = bool
+  default = true
+}
