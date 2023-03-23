@@ -89,5 +89,6 @@ variable "over_deploy" {
 }
 
 variable "web_acl_arn" {
-  type = string
+  type    = string
+  default = null
 }
