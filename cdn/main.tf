@@ -48,6 +48,7 @@ resource "aws_cloudfront_distribution" "cloudfront" {
   tags            = var.tags
   comment         = "Used for ${var.name} (${terraform.workspace}) cdn"
   aliases         = var.domain_names
+  web_acl_id      = var.web_acl_arn
 
   origin {
     connection_attempts = 3

@@ -50,3 +50,8 @@ variable "skip_route_53" {
   type    = bool
   default = false
 }
+
+variable "web_acl_arn" {
+  type    = string
+  default = null
+}
