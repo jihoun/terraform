@@ -65,6 +65,12 @@ resource "aws_api_gateway_stage" "stage" {
   tags                  = var.tags
 }
 
+resource "aws_wafv2_web_acl_association" "wacl" {
+  count        = var.web_acl_arn != null ? 1 : 0
+  resource_arn = aws_api_gateway_stage.stage.arn
+  web_acl_arn  = var.web_acl_arn
+}
+
 locals {
   log_group_name = "API-Gateway-Execution-Logs_${aws_api_gateway_rest_api.api.id}/${var.stage_name}"
 }
