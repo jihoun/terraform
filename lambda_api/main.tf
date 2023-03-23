@@ -131,12 +131,6 @@ resource "aws_api_gateway_usage_plan" "usage_plan" {
   }
 }
 
-resource "aws_wafv2_web_acl_association" "waf" {
-  count        = var.web_acl_arn == null ? 0 : 1
-  resource_arn = aws_api_gateway_stage.stage.arn
-  web_acl_arn  = var.web_acl_arn
-}
-
 resource "aws_api_gateway_client_certificate" "certificate" {
   description = "${var.name}-${terraform.workspace} certificate"
   tags        = var.tags
