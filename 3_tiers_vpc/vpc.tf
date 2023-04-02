@@ -1,7 +1,5 @@
 resource "aws_vpc" "main" {
-  tags = {
-    "Name" = var.name
-  }
+  tags = merge(var.tags, { "Name" = var.name })
 
   cidr_block           = "10.0.0.0/16"
   enable_dns_support   = true
@@ -13,9 +11,9 @@ resource "aws_subnet" "public_a" {
   cidr_block        = "10.0.0.0/20"
   availability_zone = "ap-southeast-1a"
 
-  tags = {
+  tags = merge(var.tags, {
     Name = "${var.name}-subnet-public-${data.aws_region.current.name}a"
-  }
+  })
 }
 
 resource "aws_subnet" "public_b" {
@@ -23,9 +21,9 @@ resource "aws_subnet" "public_b" {
   cidr_block        = "10.0.16.0/20"
   availability_zone = "ap-southeast-1b"
 
-  tags = {
+  tags = merge(var.tags, {
     Name = "${var.name}-subnet-public-${data.aws_region.current.name}b"
-  }
+  })
 }
 
 locals {
@@ -37,9 +35,9 @@ resource "aws_subnet" "private_a" {
   cidr_block        = "10.0.128.0/20"
   availability_zone = "ap-southeast-1a"
 
-  tags = {
+  tags = merge(var.tags, {
     Name = "${var.name}-subnet-private-${data.aws_region.current.name}a"
-  }
+  })
 }
 
 resource "aws_subnet" "private_b" {
@@ -47,9 +45,9 @@ resource "aws_subnet" "private_b" {
   cidr_block        = "10.0.144.0/20"
   availability_zone = "ap-southeast-1b"
 
-  tags = {
+  tags = merge(var.tags, {
     Name = "${var.name}-subnet-private-${data.aws_region.current.name}b"
-  }
+  })
 }
 
 locals {
@@ -59,16 +57,12 @@ locals {
 resource "aws_internet_gateway" "gw" {
   vpc_id = aws_vpc.main.id
 
-  tags = {
-    Name = "${var.name}-igw"
-  }
+  tags = merge(var.tags, { Name = "${var.name}-igw" })
 }
 
 resource "aws_route_table" "public" {
   vpc_id = aws_vpc.main.id
-  tags = {
-    Name = "${var.name}-rtb-public"
-  }
+  tags   = merge(var.tags, { Name = "${var.name}-rtb-public" })
 
   route {
     cidr_block = "0.0.0.0/0"
@@ -87,9 +81,9 @@ resource "aws_route_table_association" "public" {
 
 resource "aws_route_table" "private_a" {
   vpc_id = aws_vpc.main.id
-  tags = {
+  tags = merge(var.tags, {
     Name = "${var.name}-rtb-private-${data.aws_region.current.name}a"
-  }
+  })
 }
 
 resource "aws_route_table_association" "private_a" {
@@ -99,9 +93,9 @@ resource "aws_route_table_association" "private_a" {
 
 resource "aws_route_table" "private_b" {
   vpc_id = aws_vpc.main.id
-  tags = {
+  tags = merge(var.tags, {
     Name = "${var.name}-rtb-private-${data.aws_region.current.name}b"
-  }
+  })
 }
 
 resource "aws_route_table_association" "private_b" {
@@ -122,9 +116,9 @@ resource "aws_vpc_endpoint" "endpoints" {
   vpc_endpoint_type = "Interface"
   subnet_ids        = local.private_subnet_ids
 
-  tags = {
+  tags = merge(var.tags, {
     "Name" = "${var.name}-vpce-${each.key}"
-  }
+  })
 
   private_dns_enabled = true
 }
@@ -133,9 +127,9 @@ resource "aws_vpc_endpoint" "s3" {
   vpc_id       = aws_vpc.main.id
   service_name = "com.amazonaws.${data.aws_region.current.name}.s3"
 
-  tags = {
+  tags = merge(var.tags, {
     "Name" = "${var.name}-vpce-s3"
-  }
+  })
 }
 
 resource "aws_vpc_endpoint_route_table_association" "s3" {
@@ -150,7 +144,7 @@ resource "aws_vpc_endpoint_route_table_association" "s3" {
 resource "aws_security_group" "public" {
   name   = "${var.name}-${terraform.workspace}-public"
   vpc_id = aws_vpc.main.id
-  tags   = { Name = "${var.name}-public" }
+  tags   = merge(var.tags, { Name = "${var.name}-public" })
 
   ingress {
     from_port        = 80
@@ -178,7 +172,7 @@ resource "aws_security_group" "public" {
 resource "aws_security_group" "app" {
   name   = "${var.name}-${terraform.workspace}-app"
   vpc_id = aws_vpc.main.id
-  tags   = { Name = "${var.name}-app" }
+  tags   = merge(var.tags, { Name = "${var.name}-app" })
 
   ingress {
     description = "From self"
@@ -206,7 +200,8 @@ resource "aws_security_group" "app" {
 resource "aws_security_group" "db" {
   name   = "${var.name}-${terraform.workspace}-db"
   vpc_id = aws_vpc.main.id
-  tags   = { Name = "${var.name}-db" }
+  tags   = merge(var.tags, { Name = "${var.name}-db" })
+
   ingress {
     from_port       = 5432
     to_port         = 5432
