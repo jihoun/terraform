@@ -60,7 +60,7 @@ resource "aws_s3_object" "files" {
   key          = each.key
   source       = "${var.dir}/${each.key}"
   content_type = length(regexall("\\.[^.]+$", each.key)) > 0 ? lookup(local.mime_types, regex("\\.[^.]+$", each.key), null) : null
-  etag         = filemd5("${var.dir}/${each.key}")
+  source_hash  = filemd5("${var.dir}/${each.key}")
 }
 
 resource "aws_s3_bucket_cors_configuration" "bucket" {
