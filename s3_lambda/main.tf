@@ -7,7 +7,8 @@ resource "aws_lambda_permission" "allow_bucket" {
 }
 
 resource "aws_s3_bucket_notification" "bucket_notification" {
-  bucket = var.bucket_name
+  bucket      = var.bucket_name
+  eventbridge = var.eventbridge
 
   lambda_function {
     lambda_function_arn = var.function_arn

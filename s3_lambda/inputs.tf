@@ -24,3 +24,8 @@ variable "suffix" {
   type    = string
   default = null
 }
+
+variable "eventbridge" {
+  type    = bool
+  default = false
+}
