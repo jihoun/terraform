@@ -31,11 +31,11 @@ resource "aws_s3_bucket_logging" "logging" {
   target_prefix = "s3/${aws_s3_bucket.bucket[0].id}/"
 }
 
-# resource "aws_s3_bucket_acl" "acl" {
-#   count  = var.enabled ? 1 : 0
-#   bucket = aws_s3_bucket.bucket[0].id
-#   acl    = "private"
-# }
+resource "aws_s3_bucket_acl" "acl" {
+  count  = var.enabled ? 1 : 0
+  bucket = aws_s3_bucket.bucket[0].id
+  acl    = "private"
+}
 
 resource "aws_s3_bucket_public_access_block" "public_access" {
   count  = var.enabled ? 1 : 0
