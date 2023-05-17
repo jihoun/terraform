@@ -32,7 +32,7 @@ resource "aws_s3_bucket_logging" "logging" {
 }
 
 resource "aws_s3_bucket_acl" "acl" {
-  count  = var.enabled ? 1 : 0
+  count  = var.enabled && var.with_acl ? 1 : 0
   bucket = aws_s3_bucket.bucket[0].id
   acl    = "private"
 }

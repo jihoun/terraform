@@ -88,3 +88,13 @@ variable "over_deploy" {
   type    = bool
   default = false
 }
+
+variable "vpc_id" {
+  type    = string
+  default = null
+}
+
+variable "endpoint_id" {
+  type    = string
+  default = null
+}

@@ -33,3 +33,8 @@ variable "enabled" {
   type    = bool
   default = true
 }
+
+variable "with_acl" {
+  type    = bool
+  default = true
+}

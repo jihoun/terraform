@@ -34,6 +34,13 @@ resource "aws_lambda_function" "fn" {
   environment {
     variables = merge({ NO_COLOR = true }, var.environment_variables)
   }
+  dynamic "vpc_config" {
+    for_each = (var.subnet_ids != null && var.security_group_ids != null) ? ["tmp"] : []
+    content {
+      subnet_ids         = var.subnet_ids
+      security_group_ids = var.security_group_ids
+    }
+  }
 }
 
 resource "aws_iam_role" "role" {
@@ -67,7 +74,7 @@ data "archive_file" "archive" {
 resource "aws_iam_role_policy_attachment" "test-attach" {
   count      = var.enabled ? 1 : 0
   role       = aws_iam_role.role[0].id
-  policy_arn = "arn:aws:iam::aws:policy/service-role/AWSLambdaBasicExecutionRole"
+  policy_arn = (var.subnet_ids != null && var.security_group_ids != null) ? "arn:aws:iam::aws:policy/service-role/AWSLambdaVPCAccessExecutionRole" : "arn:aws:iam::aws:policy/service-role/AWSLambdaBasicExecutionRole"
 }
 
 locals {
