@@ -4,11 +4,39 @@ locals {
   cache_size = var.cache_size != null ? var.cache_size : 0.5
 }
 
+data "aws_region" "current" {}
+data "aws_caller_identity" "current" {}
+
 resource "aws_api_gateway_rest_api" "api" {
   name               = "${var.name}-${terraform.workspace}"
   tags               = var.tags
   description        = "Deployed by Terraform, for ${var.name} (${terraform.workspace})"
   binary_media_types = var.binary_media_types
+  policy = var.vpc_id != null ? jsonencode({
+    "Version" : "2012-10-17",
+    "Statement" : [
+      {
+        "Effect" : "Allow",
+        "Principal" : "*",
+        "Action" : "execute-api:Invoke",
+        "Resource" : ["arn:aws:execute-api:${data.aws_region.current.name}:${data.aws_caller_identity.current.id}:*/*"]
+      },
+      {
+        "Effect" : "Deny",
+        "Principal" : "*",
+        "Action" : "execute-api:Invoke",
+        "Resource" : ["arn:aws:execute-api:${data.aws_region.current.name}:${data.aws_caller_identity.current.id}:*/*"],
+        "Condition" : {
+          "StringNotEquals" : { "aws:SourceVpc" : "${var.vpc_id}" }
+        }
+      }
+    ]
+  }) : null
+
+  endpoint_configuration {
+    types            = [var.vpc_id != null ? "PRIVATE" : "EDGE"]
+    vpc_endpoint_ids = var.endpoint_id != null ? [var.endpoint_id] : null
+  }
 }
 
 resource "aws_api_gateway_resource" "proxy" {
