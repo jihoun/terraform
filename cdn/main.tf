@@ -15,6 +15,7 @@ module "bucket" {
   log_bucket = var.log_bucket
   tags       = var.tags
   cors       = var.cors
+  with_acl   = var.with_acl
 }
 
 data "aws_s3_bucket" "bucket" {

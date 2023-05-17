@@ -55,3 +55,8 @@ variable "web_acl_arn" {
   type    = string
   default = null
 }
+
+variable "with_acl" {
+  type    = bool
+  default = true
+}
