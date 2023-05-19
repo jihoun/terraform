@@ -45,7 +45,7 @@ resource "aws_lambda_function" "fn" {
 
 resource "aws_iam_role" "role" {
   count              = var.enabled ? 1 : 0
-  name_prefix        = "${var.name}_"
+  name_prefix        = "${substr(var.name, 0, 37)}_"
   path               = "/lambda/${terraform.workspace}/"
   tags               = var.tags
   assume_role_policy = <<-EOF
