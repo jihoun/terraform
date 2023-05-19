@@ -21,7 +21,7 @@ resource "aws_backup_plan" "plan" {
 
 resource "aws_iam_role" "backup" {
   name               = "AWSBackupDefaultServiceRole"
-  path               = "/service-role/"
+  path               = "/service-role/${terraform.workspace}/"
   description        = "Provides AWS Backup permission to create backups and perform restores on your behalf across AWS services"
   tags               = var.tags
   assume_role_policy = <<-JSON

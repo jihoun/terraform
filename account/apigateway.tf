@@ -1,5 +1,6 @@
 resource "aws_iam_role" "api_gateway" {
-  name               = "apigw-cloudwatch-${terraform.workspace}"
+  name               = "apigw-cloudwatch"
+  path               = "/apigw/${terraform.workspace}/"
   description        = "Allows api gateway to push Cloudwatch logs. Managed by terraform."
   tags               = var.tags
   assume_role_policy = <<-JSON

@@ -1,6 +1,6 @@
 
 resource "aws_iam_role" "execution" {
-  name_prefix = "${var.name}-execution-"
+  name_prefix = substr("${var.name}-execution_", 0, 38)
   path        = "/${terraform.workspace}/"
   tags        = var.tags
 
@@ -43,7 +43,7 @@ resource "aws_iam_role_policy_attachment" "execution2" {
 }
 
 resource "aws_iam_role" "task" {
-  name_prefix = var.name
+  name_prefix = "${substr(var.name, 0, 37)}_"
   path        = "/${terraform.workspace}/"
   tags        = var.tags
   assume_role_policy = jsonencode({

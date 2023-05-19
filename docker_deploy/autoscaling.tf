@@ -1,6 +1,6 @@
 
 resource "aws_iam_role" "ecs_autoscale_role" {
-  name_prefix = "ecs-scale-application"
+  name_prefix = "ecs-scale-application_"
   path        = "/${terraform.workspace}/"
   tags        = var.tags
 

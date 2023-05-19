@@ -119,7 +119,8 @@ resource "aws_cloudwatch_log_group" "cloudtrail" {
 }
 
 resource "aws_iam_role" "cloudtrail" {
-  name_prefix        = "cloudtrail-${terraform.workspace}"
+  name_prefix        = "cloudtrail_"
+  path               = "/${terraform.workspace}/"
   tags               = var.tags
   assume_role_policy = <<-EOF
   {
@@ -138,7 +139,7 @@ resource "aws_iam_role" "cloudtrail" {
 }
 
 resource "aws_iam_policy" "cloudtrail_cloudwatch" {
-  name_prefix = "cloudtrail-cloudwatch-${terraform.workspace}"
+  name_prefix = "cloudtrail-cloudwatch"
   path        = "/${terraform.workspace}/"
   policy      = <<-EOF
   {

@@ -187,7 +187,7 @@ data "aws_iam_policy_document" "policy_doc" {
 
 resource "aws_iam_policy" "invalidation_policy" {
   count       = var.enabled && var.dir != null ? 1 : 0
-  name_prefix = "${var.name}_cf_invalidate_${terraform.workspace}"
+  name_prefix = "${var.name}_cf_invalidate"
   path        = "/lambda/${terraform.workspace}/"
   policy      = data.aws_iam_policy_document.policy_doc[0].json
   tags        = var.tags
