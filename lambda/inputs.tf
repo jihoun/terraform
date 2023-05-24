@@ -61,3 +61,9 @@ variable "security_group_ids" {
   type    = list(string)
   default = null
 }
+
+variable "layers" {
+  type        = list(string)
+  default     = []
+  description = "list of arns"
+}
