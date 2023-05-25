@@ -1,7 +1,8 @@
 resource "aws_lambda_permission" "allow_bucket" {
+  for_each            = var.events
   statement_id_prefix = "AllowExecutionFromS3Bucket"
   action              = "lambda:InvokeFunction"
-  function_name       = var.function_arn
+  function_name       = each.value.function_arn
   principal           = "s3.amazonaws.com"
   source_arn          = var.bucket_arn
 }
@@ -10,11 +11,15 @@ resource "aws_s3_bucket_notification" "bucket_notification" {
   bucket      = var.bucket_name
   eventbridge = var.eventbridge
 
-  lambda_function {
-    lambda_function_arn = var.function_arn
-    events              = var.events
-    filter_prefix       = var.prefix
-    filter_suffix       = var.suffix
+  dynamic "lambda_function" {
+    for_each = var.events
+    content {
+      lambda_function_arn = lambda_function.value.function_arn
+      events              = lambda_function.value.events
+      filter_prefix       = lambda_function.value.prefix
+      filter_suffix       = lambda_function.value.suffix
+      id                  = lambda_function.key
+    }
   }
 
   depends_on = [aws_lambda_permission.allow_bucket]
