@@ -96,3 +96,27 @@ resource "aws_cloudwatch_log_group" "yada" {
   tags              = var.tags
   kms_key_id        = module.log_key[0].key_arn
 }
+
+data "aws_iam_policy_document" "xray" {
+  Statement {
+    Actions = [
+      "xray:PutTraceSegments",
+      "xray:PutTelemetryRecords"
+    ]
+    Resources = ["*"]
+  }
+}
+
+resource "aws_iam_policy" "xray" {
+  count       = var.trace && var.enabled ? 1 : 0
+  name_prefix = "${var.name}_xtrace"
+  path        = "/lambda/${terraform.workspace}/"
+  policy      = data.aws_iam_policy_document.xray[0].json
+  tags        = var.tags
+}
+
+resource "aws_iam_role_policy_attachment" "xray" {
+  count      = var.trace && var.enabled ? 1 : 0
+  policy_arn = aws_iam_policy.xray[0].arn
+  role       = aws_iam_role.role[0].id
+}
