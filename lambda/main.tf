@@ -111,7 +111,7 @@ resource "aws_iam_policy" "xray" {
   count       = var.trace && var.enabled ? 1 : 0
   name_prefix = "${var.name}_xtrace"
   path        = "/lambda/${terraform.workspace}/"
-  policy      = data.aws_iam_policy_document.xray[0].json
+  policy      = data.aws_iam_policy_document.xray.json
   tags        = var.tags
 }
 
