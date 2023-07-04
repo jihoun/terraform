@@ -99,11 +99,11 @@ resource "aws_cloudwatch_log_group" "yada" {
 
 data "aws_iam_policy_document" "xray" {
   statement {
-    Actions = [
+    actions = [
       "xray:PutTraceSegments",
       "xray:PutTelemetryRecords"
     ]
-    Resources = ["*"]
+    resources = ["*"]
   }
 }
 
