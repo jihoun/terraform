@@ -98,7 +98,7 @@ resource "aws_cloudwatch_log_group" "yada" {
 }
 
 data "aws_iam_policy_document" "xray" {
-  Statement {
+  statement {
     Actions = [
       "xray:PutTraceSegments",
       "xray:PutTelemetryRecords"
