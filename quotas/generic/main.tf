@@ -13,6 +13,7 @@ resource "aws_cloudwatch_metric_alarm" "quota" {
   threshold           = 80
   datapoints_to_alarm = 1
   treat_missing_data  = "notBreaching"
+  alarm_actions       = var.sns != null ? [var.sns] : []
 
   metric_query {
     id          = "m1"

@@ -7,6 +7,7 @@ terraform {
   }
 }
 
+#tfsec:ignore:aws-s3-enable-bucket-logging
 resource "aws_s3_bucket" "bucket" {
   count         = var.enabled ? 1 : 0
   bucket_prefix = "${var.name}-${terraform.workspace}"

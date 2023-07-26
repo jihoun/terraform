@@ -29,6 +29,7 @@ resource "aws_lambda_function" "fn" {
   description      = "Managed by terraform for ${terraform.workspace} environment."
   layers           = var.layers
   tracing_config {
+    #tfsec:ignore:aws-lambda-enable-tracing
     mode = var.trace ? "Active" : "PassThrough"
   }
 

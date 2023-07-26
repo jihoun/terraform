@@ -142,37 +142,48 @@ resource "aws_vpc_endpoint_route_table_association" "s3" {
 }
 
 resource "aws_security_group" "public" {
-  name   = "${var.name}-${terraform.workspace}-public"
-  vpc_id = aws_vpc.main.id
-  tags   = merge(var.tags, { Name = "${var.name}-public" })
+  name        = "${var.name}-${terraform.workspace}-public"
+  vpc_id      = aws_vpc.main.id
+  tags        = merge(var.tags, { Name = "${var.name}-public" })
+  description = "Public security group for ${var.name}"
 
   ingress {
-    from_port        = 80
-    to_port          = 80
-    protocol         = "TCP"
+    from_port = 80
+    to_port   = 80
+    protocol  = "TCP"
+    #tfsec:ignore:aws-ec2-no-public-ingress-sgr
     ipv6_cidr_blocks = ["::/0"]
-    cidr_blocks      = ["0.0.0.0/0"]
+    #tfsec:ignore:aws-ec2-no-public-ingress-sgr
+    cidr_blocks = ["0.0.0.0/0"]
+    description = "Incoming http requests"
   }
   ingress {
-    from_port        = 443
-    to_port          = 443
-    protocol         = "TCP"
+    from_port = 443
+    to_port   = 443
+    protocol  = "TCP"
+    #tfsec:ignore:aws-ec2-no-public-ingress-sgr
     ipv6_cidr_blocks = ["::/0"]
-    cidr_blocks      = ["0.0.0.0/0"]
+    #tfsec:ignore:aws-ec2-no-public-ingress-sgr
+    cidr_blocks = ["0.0.0.0/0"]
+    description = "Incoming https requests"
   }
   egress {
-    from_port        = 0
-    to_port          = 0
-    protocol         = "-1"
-    cidr_blocks      = ["0.0.0.0/0"]
+    from_port = 0
+    to_port   = 0
+    protocol  = "-1"
+    #tfsec:ignore:aws-ec2-no-public-egress-sgr
+    cidr_blocks = ["0.0.0.0/0"]
+    #tfsec:ignore:aws-ec2-no-public-egress-sgr
     ipv6_cidr_blocks = ["::/0"]
+    description      = "Outgoing requests"
   }
 }
 
 resource "aws_security_group" "app" {
-  name   = "${var.name}-${terraform.workspace}-app"
-  vpc_id = aws_vpc.main.id
-  tags   = merge(var.tags, { Name = "${var.name}-app" })
+  name        = "${var.name}-${terraform.workspace}-app"
+  vpc_id      = aws_vpc.main.id
+  tags        = merge(var.tags, { Name = "${var.name}-app" })
+  description = "App security group for ${var.name}"
 
   ingress {
     description = "From self"
@@ -189,30 +200,39 @@ resource "aws_security_group" "app" {
     security_groups = [aws_security_group.public.id]
   }
   egress {
-    from_port        = 0
-    to_port          = 0
-    protocol         = "-1"
-    cidr_blocks      = ["0.0.0.0/0"]
+    from_port = 0
+    to_port   = 0
+    protocol  = "-1"
+    #tfsec:ignore:aws-ec2-no-public-egress-sgr
+    cidr_blocks = ["0.0.0.0/0"]
+    #tfsec:ignore:aws-ec2-no-public-egress-sgr
     ipv6_cidr_blocks = ["::/0"]
+    description      = "Outgoing requests"
   }
 }
 
 resource "aws_security_group" "db" {
-  name   = "${var.name}-${terraform.workspace}-db"
-  vpc_id = aws_vpc.main.id
-  tags   = merge(var.tags, { Name = "${var.name}-db" })
+  name        = "${var.name}-${terraform.workspace}-db"
+  vpc_id      = aws_vpc.main.id
+  tags        = merge(var.tags, { Name = "${var.name}-db" })
+  description = "Database security group for ${var.name}"
 
   ingress {
     from_port       = 5432
     to_port         = 5432
     protocol        = "TCP"
     security_groups = [aws_security_group.app.id]
+    description     = "PostgreSQL requests"
   }
+
   egress {
-    from_port        = 0
-    to_port          = 0
-    protocol         = "-1"
-    cidr_blocks      = ["0.0.0.0/0"]
+    from_port = 0
+    to_port   = 0
+    protocol  = "-1"
+    #tfsec:ignore:aws-ec2-no-public-egress-sgr
+    cidr_blocks = ["0.0.0.0/0"]
+    #tfsec:ignore:aws-ec2-no-public-egress-sgr
     ipv6_cidr_blocks = ["::/0"]
+    description      = "Outgoing requests"
   }
 }

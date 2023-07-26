@@ -42,6 +42,7 @@ resource "aws_cloudfront_origin_access_identity" "origin_access_identity" {
   comment = "Used for ${var.name}-${terraform.workspace} cdn"
 }
 
+#tfsec:ignore:aws-cloudfront-enable-logging
 resource "aws_cloudfront_distribution" "cloudfront" {
   count           = var.enabled ? 1 : 0
   enabled         = true

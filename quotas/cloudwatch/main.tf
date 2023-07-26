@@ -2,6 +2,7 @@ module "generics" {
   source  = "../generic"
   tags    = var.tags
   enabled = var.enabled
+  sns     = var.sns
   quotas = {
     kms_key_throttle = {
       quota_code   = "L-7A4B5D2F"

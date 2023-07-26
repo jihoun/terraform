@@ -2,6 +2,7 @@ module "generics" {
   source  = "../generic"
   tags    = var.tags
   enabled = var.enabled
+  sns     = var.sns
   quotas = {
     cancel_key_deletion = {
       quota_code   = "L-635264CC"

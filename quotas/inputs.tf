@@ -27,3 +27,13 @@ variable "tags" {
   type    = map(string)
   default = {}
 }
+
+variable "use_sns" {
+  type    = bool
+  default = false
+}
+
+variable "trace" {
+  type    = bool
+  default = false
+}

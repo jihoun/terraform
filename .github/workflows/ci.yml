@@ -1,4 +1,4 @@
-name: Yeoheng CI
+name: Terraform CI
 
 on:
   pull_request:
@@ -13,7 +13,8 @@ jobs:
         with:
           ref: ${{ github.event.pull_request.head.ref }}
           fetch-depth: 0
-      - run: terraform fmt -check -recursive
+      - name: 🧹 terraform fmt
+        run: terraform fmt -check -recursive
       - name: 🧐 tfsec
         uses: aquasecurity/tfsec-action@v1.0.0
         with:

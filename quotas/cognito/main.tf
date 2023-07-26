@@ -2,6 +2,7 @@ module "generics" {
   source  = "../generic"
   tags    = var.tags
   enabled = var.enabled
+  sns     = var.sns
   quotas = {
     client_authentication = {
       quota_code   = "L-74D3DD04"
