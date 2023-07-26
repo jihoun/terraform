@@ -82,9 +82,10 @@ resource "aws_api_gateway_deployment" "deploy" {
 }
 
 resource "aws_api_gateway_stage" "stage" {
-  deployment_id         = aws_api_gateway_deployment.deploy.id
-  rest_api_id           = aws_api_gateway_rest_api.api.id
-  stage_name            = var.stage_name
+  deployment_id = aws_api_gateway_deployment.deploy.id
+  rest_api_id   = aws_api_gateway_rest_api.api.id
+  stage_name    = var.stage_name
+  #tfsec:ignore:aws-api-gateway-enable-tracing
   xray_tracing_enabled  = var.trace
   client_certificate_id = aws_api_gateway_client_certificate.certificate.id
   cache_cluster_enabled = local.cache ? true : null

@@ -6,3 +6,8 @@ variable "tags" {
 variable "enabled" {
   type = bool
 }
+
+variable "sns" {
+  type    = string
+  default = null
+}

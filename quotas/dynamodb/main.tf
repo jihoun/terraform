@@ -2,6 +2,7 @@ module "generics" {
   source  = "../generic"
   tags    = var.tags
   enabled = var.enabled
+  sns     = var.sns
   quotas = {
     table_count = {
       service_code = "dynamodb"

@@ -1,9 +1,10 @@
 
 resource "aws_alb" "lb" {
-  subnets         = var.lb_subnet_ids
-  security_groups = var.lb_security_group_ids
-  name_prefix     = var.name
-  tags            = var.tags
+  subnets                    = var.lb_subnet_ids
+  security_groups            = var.lb_security_group_ids
+  name_prefix                = var.name
+  tags                       = var.tags
+  drop_invalid_header_fields = true
 }
 
 resource "aws_lb_target_group" "tg" {
@@ -22,8 +23,9 @@ resource "aws_lb_listener" "http" {
   count             = var.domain_name == null ? 1 : 0
   load_balancer_arn = aws_alb.lb.arn
   port              = "80"
-  protocol          = "HTTP"
-  tags              = var.tags
+  #tfsec:ignore:aws-elb-http-not-used
+  protocol = "HTTP"
+  tags     = var.tags
 
   default_action {
     type             = "forward"

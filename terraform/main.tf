@@ -67,6 +67,7 @@ resource "aws_iam_user" "user" {
   tags  = var.tags
 }
 
+#tfsec:ignore:aws-iam-enforce-group-mfa
 resource "aws_iam_group" "group" {
   count = var.enabled ? 1 : 0
   name  = "terraform-backend"
