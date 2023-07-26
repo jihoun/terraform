@@ -98,3 +98,12 @@ variable "endpoint_id" {
   type    = string
   default = null
 }
+
+variable "alarm" {
+  type = object({
+    sns   = optional(string)
+    five = optional(number)
+    four = optional(number)
+  })
+  default = null
+}
