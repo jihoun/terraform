@@ -167,7 +167,7 @@ resource "aws_api_gateway_client_certificate" "certificate" {
 }
 
 resource "aws_cloudwatch_metric_alarm" "five" {
-  count                     = (var.alarm != null && var.alarm.five != null) ? 1 : 0
+  count                     = var.alarm != null ? var.alarm.five != null ? 1 : 0 : 0
   alarm_name                = "Api ${var.name} 5XXError > ${var.alarm.five}"
   comparison_operator       = "GreaterThanThreshold"
   evaluation_periods        = 1
@@ -186,7 +186,7 @@ resource "aws_cloudwatch_metric_alarm" "five" {
 }
 
 resource "aws_cloudwatch_metric_alarm" "four" {
-  count                     = (var.alarm != null && var.alarm.four != null) ? 1 : 0
+  count                     = var.alarm != null ? var.alarm.four != null ? 1 : 0 : 0
   alarm_name                = "Api ${var.name} 4XXError > ${var.alarm.four}"
   comparison_operator       = "GreaterThanThreshold"
   evaluation_periods        = 1
