@@ -175,6 +175,7 @@ resource "aws_security_group" "public" {
     cidr_blocks = ["0.0.0.0/0"]
     #tfsec:ignore:aws-ec2-no-public-egress-sgr
     ipv6_cidr_blocks = ["::/0"]
+    description      = "Outgoing requests"
   }
 }
 
@@ -206,6 +207,7 @@ resource "aws_security_group" "app" {
     cidr_blocks = ["0.0.0.0/0"]
     #tfsec:ignore:aws-ec2-no-public-egress-sgr
     ipv6_cidr_blocks = ["::/0"]
+    description      = "Outgoing requests"
   }
 }
 
@@ -222,6 +224,7 @@ resource "aws_security_group" "db" {
     security_groups = [aws_security_group.app.id]
     description     = "PostgreSQL requests"
   }
+
   egress {
     from_port = 0
     to_port   = 0
@@ -230,5 +233,6 @@ resource "aws_security_group" "db" {
     cidr_blocks = ["0.0.0.0/0"]
     #tfsec:ignore:aws-ec2-no-public-egress-sgr
     ipv6_cidr_blocks = ["::/0"]
+    description      = "Outgoing requests"
   }
 }
