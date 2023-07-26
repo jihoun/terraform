@@ -1,8 +1,9 @@
 resource "aws_sns_topic" "topic" {
-  count          = var.use_sns ? 1 : 0
-  name_prefix    = "quotas_${terraform.workspace}"
-  tracing_config = var.trace ? "Active" : "PassThrough"
-  tags           = var.tags
+  count             = var.use_sns ? 1 : 0
+  name_prefix       = "quotas_${terraform.workspace}"
+  tracing_config    = var.trace ? "Active" : "PassThrough"
+  tags              = var.tags
+  kms_master_key_id = "alias/aws/sns"
 }
 
 module "dynamodb" {
