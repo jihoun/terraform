@@ -2,6 +2,7 @@ locals {
   cache      = var.cache_size != null || var.cache_ttl != null
   cache_ttl  = var.cache_ttl != null ? var.cache_ttl : 300
   cache_size = var.cache_size != null ? var.cache_size : 0.5
+  tags       = merge(var.tags, { Name : var.name })
 }
 
 data "aws_region" "current" {}
@@ -9,7 +10,7 @@ data "aws_caller_identity" "current" {}
 
 resource "aws_api_gateway_rest_api" "api" {
   name               = "${var.name}-${terraform.workspace}"
-  tags               = var.tags
+  tags               = local.tags
   description        = "Deployed by Terraform, for ${var.name} (${terraform.workspace})"
   binary_media_types = var.binary_media_types
   policy = var.vpc_id != null ? jsonencode({
@@ -91,7 +92,7 @@ resource "aws_api_gateway_stage" "stage" {
   cache_cluster_enabled = local.cache ? true : null
   cache_cluster_size    = local.cache ? local.cache_size : null
   depends_on            = [aws_cloudwatch_log_group.log]
-  tags                  = var.tags
+  tags                  = local.tags
 }
 
 resource "aws_wafv2_web_acl_association" "wacl" {
@@ -107,13 +108,13 @@ locals {
 module "log_key" {
   source         = "../log_key"
   log_group_name = local.log_group_name
-  tags           = var.tags
+  tags           = local.tags
 }
 
 resource "aws_cloudwatch_log_group" "log" {
   name              = local.log_group_name
   retention_in_days = var.log_retention
-  tags              = var.tags
+  tags              = local.tags
   kms_key_id        = module.log_key.key_arn
 }
 
@@ -152,7 +153,7 @@ resource "aws_api_gateway_usage_plan" "usage_plan" {
   count       = var.requires_key ? 1 : 0
   name        = "${var.name}-${terraform.workspace}"
   description = "Usage plan for ${var.name} (${terraform.workspace})"
-  tags        = var.tags
+  tags        = local.tags
 
   api_stages {
     api_id = aws_api_gateway_rest_api.api.id
@@ -162,5 +163,43 @@ resource "aws_api_gateway_usage_plan" "usage_plan" {
 
 resource "aws_api_gateway_client_certificate" "certificate" {
   description = "${var.name}-${terraform.workspace} certificate"
-  tags        = var.tags
+  tags        = local.tags
+}
+
+resource "aws_cloudwatch_metric_alarm" "five" {
+  count                     = (var.alarm != null && var.alarm.five != null) ? 1 : 0
+  alarm_name                = "Api ${var.name} 5XXError > ${var.alarm.five}"
+  comparison_operator       = "GreaterThanThreshold"
+  evaluation_periods        = 1
+  threshold                 = var.alarm.five
+  datapoints_to_alarm       = 1
+  treat_missing_data        = "notBreaching"
+  alarm_actions             = var.alarm.sns != null ? [var.alarm.sns] : []
+  dimensions                = { "ApiName" = aws_api_gateway_rest_api.api.name }
+  metric_name               = "5XXError"
+  namespace                 = "AWS/ApiGateway"
+  ok_actions                = []
+  insufficient_data_actions = []
+  period                    = 300
+  statistic                 = "Sum"
+  tags                      = local.tags
+}
+
+resource "aws_cloudwatch_metric_alarm" "four" {
+  count                     = (var.alarm != null && var.alarm.four != null) ? 1 : 0
+  alarm_name                = "Api ${var.name} 4XXError > ${var.alarm.four}"
+  comparison_operator       = "GreaterThanThreshold"
+  evaluation_periods        = 1
+  threshold                 = var.alarm.four
+  datapoints_to_alarm       = 1
+  treat_missing_data        = "notBreaching"
+  alarm_actions             = var.alarm.sns != null ? [var.alarm.sns] : []
+  dimensions                = { "ApiName" = aws_api_gateway_rest_api.api.name }
+  metric_name               = "4XXError"
+  namespace                 = "AWS/ApiGateway"
+  ok_actions                = []
+  insufficient_data_actions = []
+  period                    = 300
+  statistic                 = "Sum"
+  tags                      = local.tags
 }
