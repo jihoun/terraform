@@ -101,7 +101,7 @@ variable "endpoint_id" {
 
 variable "alarm" {
   type = object({
-    sns   = optional(string)
+    sns  = optional(string)
     five = optional(number)
     four = optional(number)
   })
