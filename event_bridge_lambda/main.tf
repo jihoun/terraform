@@ -1,6 +1,6 @@
 
 resource "aws_cloudwatch_event_rule" "listener" {
-  name_prefix    = "${var.lambda.name}_${var.bus_name}"
+  name_prefix    = substr("${var.lambda.name}_${var.bus_name}", 0, 38)
   description    = "Managed by terraform for ${terraform.workspace}"
   event_bus_name = var.bus_name
   event_pattern  = var.event_pattern
