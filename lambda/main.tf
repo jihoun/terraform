@@ -73,7 +73,7 @@ data "archive_file" "archive" {
   output_path = "${path.module}/.tmp/${md5(var.dir)}.zip"
 }
 
-resource "aws_iam_role_policy_attachment" "test-attach" {
+resource "aws_iam_role_policy_attachment" "base_policy" {
   count      = var.enabled ? 1 : 0
   role       = aws_iam_role.role[0].id
   policy_arn = (var.subnet_ids != null && var.security_group_ids != null) ? "arn:aws:iam::aws:policy/service-role/AWSLambdaVPCAccessExecutionRole" : "arn:aws:iam::aws:policy/service-role/AWSLambdaBasicExecutionRole"
