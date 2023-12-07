@@ -1,6 +1,6 @@
 # AWS Terrfaform modules
 This is a list of terraform modules which allow quickly deploying common patterns on AWS. 
-Those try to stick to the best deployment recommendations such as, least privilege, encryption at rest/in transit, resuliency, etc.
+Those try to stick to the best deployment recommendations such as: least privilege, encryption at rest/in transit, resiliency, etc.
 They typically help to iterate fast, when deploying new functionalitites. And make reusability of best practices a no brainer.
 
 Here are the most useful ones:
@@ -11,7 +11,7 @@ This deploys a cloudfront distribution and an S3 bucket.
 * Files on S3 are encrypted 
 * Files on S3 can only be accessed throught cloudfront. 
 * It optionally supports custom domain name.
-* It can be linked to a local bucket and will automatically invalidate the cloudfront distribution when files change.
+* It can be linked to a local folder and will automatically invalidate the cloudfront distribution when files change.
 
 ## Cors
 Allows quickly adding CORS support to an api gateway resources
@@ -26,7 +26,7 @@ This supports:
 * s3
 
 ## lambda
-Quickly deploy a lambda function, including the role. It can be deployed within a VPC and it automatically syncs with a local folder.
+Quickly deploy a lambda function, including the role. It can be deployed within a VPC and it automatically syncs with a local folder containing the app to be deployed.
 
 ## lambda_api
 Make a lambda function available behind an api gateway based endpoint. The following are optional:
