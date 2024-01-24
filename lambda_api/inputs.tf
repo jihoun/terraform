@@ -107,3 +107,8 @@ variable "alarm" {
   })
   default = null
 }
+
+variable "enabled" {
+  type    = bool
+  default = true
+}

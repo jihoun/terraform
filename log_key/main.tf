@@ -2,6 +2,7 @@ data "aws_caller_identity" "current" {}
 data "aws_region" "current" {}
 
 resource "aws_kms_key" "key" {
+  count                    = var.enabled ? 1 : 0
   description              = "Key to encrypt cloudwatch log group ${var.log_group_name}. Managed by terraform."
   is_enabled               = true
   multi_region             = false
@@ -47,6 +48,7 @@ resource "aws_kms_key" "key" {
 }
 
 resource "aws_kms_alias" "alias" {
+  count         = var.enabled ? 1 : 0
   name          = "alias/logs_${var.log_group_name}"
-  target_key_id = aws_kms_key.key.key_id
+  target_key_id = aws_kms_key.key[0].key_id
 }

@@ -1,4 +1,5 @@
 resource "aws_api_gateway_method" "method" {
+  count            = var.enabled ? 1 : 0
   rest_api_id      = var.rest_api_id
   resource_id      = var.resource_id
   http_method      = var.http_method
@@ -19,6 +20,7 @@ data "aws_caller_identity" "current" {}
 data "aws_region" "current" {}
 
 resource "aws_api_gateway_integration" "method" {
+  count                   = var.enabled ? 1 : 0
   rest_api_id             = var.rest_api_id
   resource_id             = var.resource_id
   http_method             = var.http_method
@@ -32,6 +34,7 @@ resource "aws_api_gateway_integration" "method" {
 }
 
 resource "aws_lambda_permission" "apigw_lambda" {
+  count         = var.enabled ? 1 : 0
   statement_id  = "${var.rest_api_id}-${var.resource_id}-${var.http_method}"
   action        = "lambda:InvokeFunction"
   function_name = var.function_name

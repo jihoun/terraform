@@ -6,3 +6,8 @@ variable "tags" {
 variable "log_group_name" {
   type = string
 }
+
+variable "enabled" {
+  type    = bool
+  default = true
+}

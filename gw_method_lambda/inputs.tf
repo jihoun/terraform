@@ -34,3 +34,8 @@ variable "cache_key_parameters" {
   type    = list(string)
   default = []
 }
+
+variable "enabled" {
+  type    = bool
+  default = true
+}
