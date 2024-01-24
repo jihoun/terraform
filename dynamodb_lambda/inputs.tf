@@ -18,3 +18,8 @@ variable "reports_errors" {
   type    = bool
   default = true
 }
+
+variable "enabled" {
+  type    = bool
+  default = true
+}

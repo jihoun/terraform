@@ -11,6 +11,7 @@ data "aws_iam_policy_document" "policy" {
 }
 
 resource "aws_iam_policy" "policy" {
+  count       = var.enabled ? 1 : 0
   path        = "/lambda/${terraform.workspace}/"
   name_prefix = "${var.function_name}_stream_"
   policy      = data.aws_iam_policy_document.policy.json
@@ -18,11 +19,13 @@ resource "aws_iam_policy" "policy" {
 }
 
 resource "aws_iam_role_policy_attachment" "role_policy" {
+  count      = var.enabled ? 1 : 0
   role       = var.function_role_name
-  policy_arn = aws_iam_policy.policy.arn
+  policy_arn = aws_iam_policy.policy[0].arn
 }
 
 resource "aws_lambda_event_source_mapping" "stream_2_lambda" {
+  count                              = var.enabled ? 1 : 0
   event_source_arn                   = var.stream_arn
   function_name                      = var.function_name
   depends_on                         = [aws_iam_role_policy_attachment.role_policy]
