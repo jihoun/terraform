@@ -8,6 +8,7 @@ resource "aws_lambda_permission" "allow_bucket" {
 }
 
 resource "aws_s3_bucket_notification" "bucket_notification" {
+  count       = length(var.events) != 0 ? 1 : 0
   bucket      = var.bucket_name
   eventbridge = var.eventbridge
 
