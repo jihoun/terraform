@@ -38,3 +38,8 @@ variable "with_acl" {
   type    = bool
   default = true
 }
+
+variable "cors_methods" {
+  type    = list(string)
+  default = ["GET"]
+}

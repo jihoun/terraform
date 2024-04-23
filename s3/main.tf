@@ -69,7 +69,7 @@ resource "aws_s3_bucket_cors_configuration" "bucket" {
   bucket = aws_s3_bucket.bucket[0].id
 
   cors_rule {
-    allowed_methods = ["GET"]
+    allowed_methods = var.cors_methods
     allowed_origins = ["*"]
     allowed_headers = ["*"]
   }
