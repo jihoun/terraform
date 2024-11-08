@@ -76,6 +76,7 @@ resource "aws_api_gateway_deployment" "deploy" {
   count             = var.enabled ? 1 : 0
   rest_api_id       = aws_api_gateway_rest_api.api[0].id
   stage_description = local.stage_description
+  stage_name        = "api"
 
   triggers = {
     redeployment = sha1(jsonencode(aws_api_gateway_rest_api.api[0].body))
