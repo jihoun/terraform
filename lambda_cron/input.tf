@@ -18,3 +18,8 @@ variable "cron" {
 variable "name" {
   type = string
 }
+
+variable "enabled" {
+  type    = bool
+  default = true
+}
