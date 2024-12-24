@@ -25,5 +25,5 @@ resource "aws_lambda_event_source_mapping" "mapping" {
   event_source_arn        = var.queue_arn
   function_name           = var.function_arn
   function_response_types = var.reports_errors ? ["ReportBatchItemFailures"] : null
-  depends_on              = [aws_iam_role_policy_attachment[0].role]
+  depends_on              = [aws_iam_role_policy_attachment.role]
 }
