@@ -1,5 +1,5 @@
 resource "aws_lambda_permission" "allow_bucket" {
-  for_each            = var.events
+  for_each            = var.enabled ? var.events : {}
   statement_id_prefix = "AllowExecutionFromS3Bucket"
   action              = "lambda:InvokeFunction"
   function_name       = each.value.function_arn
@@ -8,7 +8,7 @@ resource "aws_lambda_permission" "allow_bucket" {
 }
 
 resource "aws_s3_bucket_notification" "bucket_notification" {
-  count       = length(var.events) != 0 ? 1 : 0
+  count       = var.enabled && length(var.events) != 0 ? 1 : 0
   bucket      = var.bucket_name
   eventbridge = var.eventbridge
 

@@ -19,3 +19,8 @@ variable "eventbridge" {
   type    = bool
   default = false
 }
+
+variable "enabled" {
+  type    = bool
+  default = true
+}
