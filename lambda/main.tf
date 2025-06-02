@@ -43,6 +43,8 @@ resource "aws_lambda_function" "fn" {
       security_group_ids = var.security_group_ids
     }
   }
+
+  depends_on = [aws_iam_role_policy_attachment.base_policy[0]]
 }
 
 resource "aws_iam_role" "role" {
