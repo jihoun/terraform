@@ -12,7 +12,13 @@ variable "tags" {
 }
 
 variable "cron" {
-  type = string
+  type    = string
+  default = null
+}
+
+variable "rate" {
+  type    = string
+  default = null
 }
 
 variable "name" {

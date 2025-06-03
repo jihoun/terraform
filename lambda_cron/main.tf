@@ -2,7 +2,7 @@ resource "aws_cloudwatch_event_rule" "cron" {
   count               = var.enabled ? 1 : 0
   name                = "${var.name}_${terraform.workspace}"
   description         = "Managed by terraform for ${var.name} (${terraform.workspace})"
-  schedule_expression = "cron(${var.cron})"
+  schedule_expression = var.cron != null ? "cron(${var.cron})" : "rate(${var.rate})"
   tags                = var.tags
 }
 
