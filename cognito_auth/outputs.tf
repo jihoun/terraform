@@ -11,3 +11,7 @@ output "Amplify_Auth" {
     }
   })
 }
+
+output "user_pool_arn" {
+  value = var.enabled ? aws_cognito_user_pool.user_pool[0].arn : ""
+}
