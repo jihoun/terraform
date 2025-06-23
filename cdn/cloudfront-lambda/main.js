@@ -4,7 +4,7 @@ const cloudfront = new AWS.CloudFront();
 
 const DistributionId = process.env.DISTRIBUTION_ID || "";
 
-exports.handler = async function (event) {
+exports.handler = async function () {
   const params = {
     DistributionId,
     InvalidationBatch: {
@@ -15,7 +15,5 @@ exports.handler = async function (event) {
       },
     },
   };
-  console.log(params);
-  const res = await cloudfront.createInvalidation(params).promise();
-  console.log(res);
+  await cloudfront.createInvalidation(params).promise();
 };
