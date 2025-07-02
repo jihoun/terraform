@@ -29,7 +29,7 @@ resource "aws_api_gateway_integration" "method" {
   passthrough_behavior    = "WHEN_NO_MATCH"
   integration_http_method = "POST"
   content_handling        = "CONVERT_TO_TEXT"
-  uri                     = "arn:aws:apigateway:${data.aws_region.current.name}:lambda:path/2015-03-31/functions/arn:aws:lambda:${data.aws_region.current.name}:${data.aws_caller_identity.current.account_id}:function:${var.function_name}/invocations"
+  uri                     = "arn:aws:apigateway:${data.aws_region.current.region}:lambda:path/2015-03-31/functions/arn:aws:lambda:${data.aws_region.current.region}:${data.aws_caller_identity.current.account_id}:function:${var.function_name}/invocations"
   depends_on              = [aws_api_gateway_method.method]
 }
 
@@ -41,5 +41,5 @@ resource "aws_lambda_permission" "apigw_lambda" {
   principal     = "apigateway.amazonaws.com"
 
   # More: http://docs.aws.amazon.com/apigateway/latest/developerguide/api-gateway-control-access-using-iam-policies-to-invoke-api.html
-  source_arn = "arn:aws:execute-api:${data.aws_region.current.name}:${data.aws_caller_identity.current.account_id}:${var.rest_api_id}/*/*/*"
+  source_arn = "arn:aws:execute-api:${data.aws_region.current.region}:${data.aws_caller_identity.current.account_id}:${var.rest_api_id}/*/*/*"
 }

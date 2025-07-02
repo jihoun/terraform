@@ -24,7 +24,7 @@ resource "aws_kms_key" "cloudtrail" {
         "Action": "kms:GenerateDataKey*",
         "Condition": {
             "StringEquals": {
-              "AWS:SourceArn": "arn:aws:cloudtrail:${data.aws_region.current.name}:${data.aws_caller_identity.current.account_id}:trail/management-events"
+              "AWS:SourceArn": "arn:aws:cloudtrail:${data.aws_region.current.region}:${data.aws_caller_identity.current.account_id}:trail/management-events"
             },
             "StringLike": {
               "kms:EncryptionContext:aws:cloudtrail:arn": "arn:aws:cloudtrail:*:${data.aws_caller_identity.current.account_id}:trail/*"
@@ -68,7 +68,7 @@ resource "aws_kms_key" "cloudtrail" {
         "Condition": {
           "StringEquals": {
             "kms:CallerAccount": "${data.aws_caller_identity.current.account_id}",
-            "kms:ViaService": "ec2.${data.aws_region.current.name}.amazonaws.com"
+            "kms:ViaService": "ec2.${data.aws_region.current.region}.amazonaws.com"
           }
         },
         "Effect": "Allow",
@@ -151,7 +151,7 @@ resource "aws_iam_policy" "cloudtrail_cloudwatch" {
             "logs:CreateLogStream"
         ],
         "Resource": [
-            "${aws_cloudwatch_log_group.cloudtrail.arn}:log-stream:${data.aws_caller_identity.current.account_id}_CloudTrail_${data.aws_region.current.name}*"
+            "${aws_cloudwatch_log_group.cloudtrail.arn}:log-stream:${data.aws_caller_identity.current.account_id}_CloudTrail_${data.aws_region.current.region}*"
         ]
         },
         {
@@ -160,7 +160,7 @@ resource "aws_iam_policy" "cloudtrail_cloudwatch" {
             "logs:PutLogEvents"
         ],
         "Resource": [
-            "${aws_cloudwatch_log_group.cloudtrail.arn}:log-stream:${data.aws_caller_identity.current.account_id}_CloudTrail_${data.aws_region.current.name}*"
+            "${aws_cloudwatch_log_group.cloudtrail.arn}:log-stream:${data.aws_caller_identity.current.account_id}_CloudTrail_${data.aws_region.current.region}*"
         ]
         }
     ]

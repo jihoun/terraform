@@ -12,7 +12,7 @@ resource "aws_subnet" "public_a" {
   availability_zone = "ap-southeast-1a"
 
   tags = merge(var.tags, {
-    Name = "${var.name}-subnet-public-${data.aws_region.current.name}a"
+    Name = "${var.name}-subnet-public-${data.aws_region.current.region}a"
   })
 }
 
@@ -22,7 +22,7 @@ resource "aws_subnet" "public_b" {
   availability_zone = "ap-southeast-1b"
 
   tags = merge(var.tags, {
-    Name = "${var.name}-subnet-public-${data.aws_region.current.name}b"
+    Name = "${var.name}-subnet-public-${data.aws_region.current.region}b"
   })
 }
 
@@ -36,7 +36,7 @@ resource "aws_subnet" "private_a" {
   availability_zone = "ap-southeast-1a"
 
   tags = merge(var.tags, {
-    Name = "${var.name}-subnet-private-${data.aws_region.current.name}a"
+    Name = "${var.name}-subnet-private-${data.aws_region.current.region}a"
   })
 }
 
@@ -46,7 +46,7 @@ resource "aws_subnet" "private_b" {
   availability_zone = "ap-southeast-1b"
 
   tags = merge(var.tags, {
-    Name = "${var.name}-subnet-private-${data.aws_region.current.name}b"
+    Name = "${var.name}-subnet-private-${data.aws_region.current.region}b"
   })
 }
 
@@ -82,7 +82,7 @@ resource "aws_route_table_association" "public" {
 resource "aws_route_table" "private_a" {
   vpc_id = aws_vpc.main.id
   tags = merge(var.tags, {
-    Name = "${var.name}-rtb-private-${data.aws_region.current.name}a"
+    Name = "${var.name}-rtb-private-${data.aws_region.current.region}a"
   })
 }
 
@@ -94,7 +94,7 @@ resource "aws_route_table_association" "private_a" {
 resource "aws_route_table" "private_b" {
   vpc_id = aws_vpc.main.id
   tags = merge(var.tags, {
-    Name = "${var.name}-rtb-private-${data.aws_region.current.name}b"
+    Name = "${var.name}-rtb-private-${data.aws_region.current.region}b"
   })
 }
 
@@ -112,7 +112,7 @@ resource "aws_vpc_endpoint" "endpoints" {
     rds            = "rds"
   }
   vpc_id            = aws_vpc.main.id
-  service_name      = "com.amazonaws.${data.aws_region.current.name}.${each.value}"
+  service_name      = "com.amazonaws.${data.aws_region.current.region}.${each.value}"
   vpc_endpoint_type = "Interface"
   subnet_ids        = local.private_subnet_ids
 
@@ -125,7 +125,7 @@ resource "aws_vpc_endpoint" "endpoints" {
 
 resource "aws_vpc_endpoint" "s3" {
   vpc_id       = aws_vpc.main.id
-  service_name = "com.amazonaws.${data.aws_region.current.name}.s3"
+  service_name = "com.amazonaws.${data.aws_region.current.region}.s3"
 
   tags = merge(var.tags, {
     "Name" = "${var.name}-vpce-s3"

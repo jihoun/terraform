@@ -21,13 +21,13 @@ resource "aws_api_gateway_rest_api" "api" {
         "Effect" : "Allow",
         "Principal" : "*",
         "Action" : "execute-api:Invoke",
-        "Resource" : ["arn:aws:execute-api:${data.aws_region.current.name}:${data.aws_caller_identity.current.id}:*/*"]
+        "Resource" : ["arn:aws:execute-api:${data.aws_region.current.region}:${data.aws_caller_identity.current.id}:*/*"]
       },
       {
         "Effect" : "Deny",
         "Principal" : "*",
         "Action" : "execute-api:Invoke",
-        "Resource" : ["arn:aws:execute-api:${data.aws_region.current.name}:${data.aws_caller_identity.current.id}:*/*"],
+        "Resource" : ["arn:aws:execute-api:${data.aws_region.current.region}:${data.aws_caller_identity.current.id}:*/*"],
         "Condition" : {
           "StringNotEquals" : { "aws:SourceVpc" : "${var.vpc_id}" }
         }

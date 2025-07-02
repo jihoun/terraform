@@ -60,7 +60,7 @@ resource "aws_cloudfront_distribution" "cloudfront" {
 
     origin_shield {
       enabled              = true
-      origin_shield_region = data.aws_region.current.name
+      origin_shield_region = data.aws_region.current.region
     }
 
     s3_origin_config {

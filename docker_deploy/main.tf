@@ -26,7 +26,7 @@ resource "aws_ecs_task_definition" "service" {
         options = {
           awslogs-create-group  = "true"
           awslogs-group         = "/ecs/${var.name}"
-          awslogs-region        = "${data.aws_region.current.name}"
+          awslogs-region        = "${data.aws_region.current.region}"
           awslogs-stream-prefix = "ecs"
         }
       }
