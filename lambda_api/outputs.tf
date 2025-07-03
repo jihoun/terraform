@@ -27,3 +27,7 @@ output "api" {
 output "endpoint" {
   value = length(aws_api_gateway_rest_api.api) == 1 ? "${aws_api_gateway_rest_api.api[0].id}.execute-api.${data.aws_region.current.region}.amazonaws.com" : ""
 }
+
+output "arn" {
+  value = length(aws_api_gateway_rest_api.api) == 1 ? aws_api_gateway_rest_api.api[0].arn : ""
+}
