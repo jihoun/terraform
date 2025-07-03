@@ -23,3 +23,7 @@ output "api" {
   } : {}
   description = "Same as looking at url and usage_plan_id separately but those often goes in pair. And it is a kind of convention to pass those 2 in this format across modules"
 }
+
+output "endpoint" {
+  value = length(aws_api_gateway_rest_api.api) == 1 ? "${aws_api_gateway_rest_api.api[0].id}.execute-api.${data.aws_region.current.region}.amazonaws.com" : ""
+}
