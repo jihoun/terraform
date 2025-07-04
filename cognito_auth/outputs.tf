@@ -1,5 +1,5 @@
 output "Amplify_Auth" {
-  value = jsonencode({
+  value = {
     Auth = {
       Cognito = var.enabled ? {
         mandatorySignIn  = true
@@ -9,7 +9,7 @@ output "Amplify_Auth" {
         userPoolClientId = aws_cognito_user_pool_client.client[0].id
       } : {}
     }
-  })
+  }
 }
 
 output "user_pool_arn" {
