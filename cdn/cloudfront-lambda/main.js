@@ -1,8 +1,11 @@
-const AWS = require("aws-sdk");
-
-const cloudfront = new AWS.CloudFront();
+const {
+  CloudFrontClient,
+  CreateInvalidationCommand,
+} = require("@aws-sdk/client-cloudfront");
 
 const DistributionId = process.env.DISTRIBUTION_ID || "";
+
+const cloudfront = new CloudFrontClient({});
 
 exports.handler = async function () {
   const params = {
@@ -15,5 +18,6 @@ exports.handler = async function () {
       },
     },
   };
-  await cloudfront.createInvalidation(params).promise();
+  const command = new CreateInvalidationCommand(params);
+  await cloudfront.send(command);
 };
