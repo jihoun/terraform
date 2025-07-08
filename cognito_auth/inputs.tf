@@ -4,8 +4,7 @@ variable "tags" {
 }
 
 variable "name" {
-  type    = string
-  default = "cognito_auth"
+  type = string
 }
 
 variable "enabled" {
