@@ -48,3 +48,61 @@ resource "aws_cognito_identity_pool" "id_pool" {
   }
 }
 
+resource "aws_iam_role" "cognito_role" {
+  count = var.enabled ? 1 : 0
+  assume_role_policy = jsonencode({
+    Version = "2012-10-17"
+    Statement = [
+      {
+        Action = "sts:AssumeRoleWithWebIdentity"
+        Condition = {
+          "ForAnyValue:StringLike" = {
+            "cognito-identity.amazonaws.com:amr" = "authenticated"
+          }
+          StringEquals = {
+            "cognito-identity.amazonaws.com:aud" = aws_cognito_identity_pool.id_pool[0].id
+          }
+        }
+        Effect = "Allow"
+        Principal = {
+          Federated = "cognito-identity.amazonaws.com"
+        }
+      }
+    ]
+  })
+  path = "/service-role/"
+  tags = local.tags
+  name = "authed_admin_${terraform.workspace}"
+}
+
+resource "aws_cognito_identity_pool_roles_attachment" "main" {
+  count            = var.enabled ? 1 : 0
+  identity_pool_id = aws_cognito_identity_pool.id_pool[0].id
+
+  roles = {
+    "authenticated" = aws_iam_role.cognito_role[0].arn
+  }
+}
+
+
+resource "aws_iam_policy" "cognito_authed" {
+  count = var.enabled ? 1 : 0
+  path  = "/service-role/"
+  tags  = local.tags
+  policy = jsonencode({
+    Statement = [
+      {
+        Action   = ["cognito-identity:GetCredentialsForIdentity"]
+        Effect   = "Allow"
+        Resource = ["*"]
+      }
+    ]
+    Version = "2012-10-17"
+  })
+}
+
+resource "aws_iam_role_policy_attachment" "cognito_role_policy_attachment" {
+  count      = var.enabled ? 1 : 0
+  role       = aws_iam_role.cognito_role[0].name
+  policy_arn = aws_iam_policy.cognito_authed[0].arn
+}
