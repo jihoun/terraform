@@ -6,7 +6,7 @@ data "aws_region" "current" {}
 
 resource "aws_cognito_user_pool" "user_pool" {
   count                    = var.enabled ? 1 : 0
-  name                     = "admin_${terraform.workspace}"
+  name                     = "${var.name}_${terraform.workspace}"
   deletion_protection      = "ACTIVE"
   tags                     = local.tags
   auto_verified_attributes = ["email"]
