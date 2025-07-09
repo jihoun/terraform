@@ -70,9 +70,9 @@ resource "aws_iam_role" "cognito_role" {
       }
     ]
   })
-  path = "/service-role/${terraform.workspace}/"
+  path = "/service-role/${terraform.workspace}/authed"
   tags = local.tags
-  name = "authed_${var.name}"
+  name = var.name
 }
 
 resource "aws_cognito_identity_pool_roles_attachment" "main" {
@@ -84,11 +84,10 @@ resource "aws_cognito_identity_pool_roles_attachment" "main" {
   }
 }
 
-
 resource "aws_iam_policy" "cognito_authed" {
   count       = var.enabled ? 1 : 0
-  path        = "/service-role/${terraform.workspace}/"
-  name_prefix = "authed_${var.name}"
+  path        = "/service-role/${terraform.workspace}/authed"
+  name_prefix = var.name
   tags        = local.tags
   policy = jsonencode({
     Statement = [
