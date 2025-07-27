@@ -14,6 +14,9 @@ terraform {
 locals {
   name = "${var.name}_${terraform.workspace}"
 }
+
+data "aws_region" "current" {}
+
 resource "aws_lambda_function" "fn" {
   count            = var.enabled ? 1 : 0
   role             = aws_iam_role.role[0].arn
@@ -34,7 +37,10 @@ resource "aws_lambda_function" "fn" {
   }
 
   environment {
-    variables = merge({ NO_COLOR = true }, var.environment_variables)
+    variables = merge({
+      NO_COLOR = true
+      REGION   = data.aws_region.current.region
+    }, var.environment_variables)
   }
   dynamic "vpc_config" {
     for_each = (var.subnet_ids != null && var.security_group_ids != null) ? ["tmp"] : []
