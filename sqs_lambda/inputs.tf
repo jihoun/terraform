@@ -24,3 +24,8 @@ variable "enabled" {
   type    = bool
   default = true
 }
+
+variable "batch_size" {
+  type    = number
+  default = 10
+}

@@ -21,6 +21,7 @@ resource "aws_iam_role_policy_attachment" "role" {
 }
 
 resource "aws_lambda_event_source_mapping" "mapping" {
+  batch_size              = var.batch_size
   count                   = var.enabled ? 1 : 0
   event_source_arn        = var.queue_arn
   function_name           = var.function_arn
