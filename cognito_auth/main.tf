@@ -70,9 +70,9 @@ resource "aws_iam_role" "cognito_role" {
       }
     ]
   })
-  path = "/service-role/${terraform.workspace}/authed/"
-  tags = local.tags
-  name = var.name
+  path        = "/service-role/${terraform.workspace}/authed/"
+  tags        = local.tags
+  name_prefix = var.name
 }
 
 resource "aws_cognito_identity_pool_roles_attachment" "main" {
