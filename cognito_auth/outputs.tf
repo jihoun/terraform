@@ -19,3 +19,7 @@ output "user_pool_arn" {
 output "cognito_role_arn" {
   value = var.enabled ? aws_iam_role.cognito_role[0].arn : ""
 }
+
+output "user_pool_id" {
+  value = var.enabled ? aws_cognito_user_pool.user_pool[0].id : ""
+}
