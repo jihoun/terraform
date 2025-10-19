@@ -12,6 +12,7 @@ variable "function_role_name" {
 
 variable "tags" {
   type = map(string)
+  default = {}
 }
 
 variable "reports_errors" {
