@@ -45,7 +45,7 @@ variable "cors_methods" {
 }
 
 variable "region" {
-  type    = string
-  default = null
+  type        = string
+  default     = null
   description = "Region to create the S3 bucket in. If not provided, will use the default region."
 }

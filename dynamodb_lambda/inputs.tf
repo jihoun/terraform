@@ -11,7 +11,7 @@ variable "function_role_name" {
 }
 
 variable "tags" {
-  type = map(string)
+  type    = map(string)
   default = {}
 }
 

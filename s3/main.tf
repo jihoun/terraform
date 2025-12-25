@@ -9,16 +9,18 @@ terraform {
 
 #tfsec:ignore:aws-s3-enable-bucket-logging
 resource "aws_s3_bucket" "bucket" {
-  count         = var.enabled ? 1 : 0
+  count = var.enabled ? 1 : 0
+
   bucket_prefix = "${var.name}-${terraform.workspace}"
   tags          = var.tags
   region        = var.region
 }
 
 resource "aws_s3_bucket_server_side_encryption_configuration" "sse" {
-  count  = var.enabled ? 1 : 0
-  bucket = aws_s3_bucket.bucket[0].id
+  count = var.enabled ? 1 : 0
 
+  bucket = aws_s3_bucket.bucket[0].id
+  region = var.region
   rule {
     apply_server_side_encryption_by_default {
       sse_algorithm = "AES256"
@@ -40,16 +42,18 @@ resource "aws_s3_bucket_acl" "acl" {
 }
 
 resource "aws_s3_bucket_public_access_block" "public_access" {
-  count  = var.enabled ? 1 : 0
-  bucket = aws_s3_bucket.bucket[0].id
+  count = var.enabled ? 1 : 0
 
+  region                  = var.region
+  bucket                  = aws_s3_bucket.bucket[0].id
   block_public_acls       = true
   block_public_policy     = true
   ignore_public_acls      = true
   restrict_public_buckets = true
 }
 resource "aws_s3_bucket_versioning" "versioning_example" {
-  count  = var.enabled ? 1 : 0
+  count = var.enabled ? 1 : 0
+
   bucket = aws_s3_bucket.bucket[0].id
   versioning_configuration {
     status = "Enabled"
@@ -67,6 +71,7 @@ resource "aws_s3_object" "files" {
 
 resource "aws_s3_bucket_cors_configuration" "bucket" {
   count  = var.cors && var.enabled ? 1 : 0
+  
   bucket = aws_s3_bucket.bucket[0].id
 
   cors_rule {
