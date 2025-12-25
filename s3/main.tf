@@ -29,15 +29,19 @@ resource "aws_s3_bucket_server_side_encryption_configuration" "sse" {
 }
 
 resource "aws_s3_bucket_logging" "logging" {
-  count         = var.enabled && var.log_bucket != null ? 1 : 0
+  count = var.enabled && var.log_bucket != null ? 1 : 0
+
   bucket        = aws_s3_bucket.bucket[0].id
+  region        = var.region
   target_bucket = var.log_bucket
   target_prefix = "s3/${aws_s3_bucket.bucket[0].id}/"
 }
 
 resource "aws_s3_bucket_acl" "acl" {
-  count  = var.enabled && var.with_acl ? 1 : 0
+  count = var.enabled && var.with_acl ? 1 : 0
+
   bucket = aws_s3_bucket.bucket[0].id
+  region = var.region
   acl    = "private"
 }
 
@@ -55,6 +59,7 @@ resource "aws_s3_bucket_versioning" "versioning_example" {
   count = var.enabled ? 1 : 0
 
   bucket = aws_s3_bucket.bucket[0].id
+  region = var.region
   versioning_configuration {
     status = "Enabled"
   }
@@ -70,8 +75,8 @@ resource "aws_s3_object" "files" {
 }
 
 resource "aws_s3_bucket_cors_configuration" "bucket" {
-  count  = var.cors && var.enabled ? 1 : 0
-  
+  count = var.cors && var.enabled ? 1 : 0
+
   bucket = aws_s3_bucket.bucket[0].id
 
   cors_rule {
