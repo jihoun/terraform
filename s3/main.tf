@@ -12,6 +12,7 @@ resource "aws_s3_bucket" "bucket" {
   count         = var.enabled ? 1 : 0
   bucket_prefix = "${var.name}-${terraform.workspace}"
   tags          = var.tags
+  region        = var.region
 }
 
 resource "aws_s3_bucket_server_side_encryption_configuration" "sse" {
