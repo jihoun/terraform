@@ -39,3 +39,9 @@ variable "enabled" {
   type    = bool
   default = true
 }
+
+variable "authorization_scopes" {
+  type        = list(string)
+  default     = []
+  description = "List of OAuth scopes required for the method. When non-empty, API Gateway expects an access token and validates these scopes (Cognito). When empty, expects an identity token."
+}

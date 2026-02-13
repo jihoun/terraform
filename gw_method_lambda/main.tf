@@ -1,11 +1,12 @@
 resource "aws_api_gateway_method" "method" {
-  count            = var.enabled ? 1 : 0
-  rest_api_id      = var.rest_api_id
-  resource_id      = var.resource_id
-  http_method      = var.http_method
-  authorization    = var.authorization
-  authorizer_id    = var.authorizer_id
-  api_key_required = var.api_key_required
+  count                = var.enabled ? 1 : 0
+  rest_api_id          = var.rest_api_id
+  resource_id          = var.resource_id
+  http_method          = var.http_method
+  authorization        = var.authorization
+  authorizer_id        = var.authorizer_id
+  api_key_required     = var.api_key_required
+  authorization_scopes = length(var.authorization_scopes) > 0 ? var.authorization_scopes : null
   request_parameters = merge(
     { "method.request.path.proxy" = true },
     {
