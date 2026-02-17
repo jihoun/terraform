@@ -34,7 +34,7 @@ resource "aws_cognito_user_pool" "user_pool" {
       required            = schema.value.required
 
       dynamic "string_attribute_constraints" {
-        for_each = schema.value.attribute_data_type == "String" && (schema.value.min_length != null || schema.value.max_length != null) ? [1] : []
+        for_each = schema.value.attribute_data_type == "String" ? [1] : []
         content {
           min_length = schema.value.min_length
           max_length = schema.value.max_length
