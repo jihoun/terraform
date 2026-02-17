@@ -24,6 +24,24 @@ resource "aws_cognito_user_pool" "user_pool" {
     require_uppercase                = true
     temporary_password_validity_days = 7
   }
+
+  dynamic "schema" {
+    for_each = var.schema
+    content {
+      name                = schema.value.name
+      attribute_data_type = schema.value.attribute_data_type
+      mutable             = schema.value.mutable
+      required            = schema.value.required
+
+      dynamic "string_attribute_constraints" {
+        for_each = schema.value.attribute_data_type == "String" && (schema.value.min_length != null || schema.value.max_length != null) ? [1] : []
+        content {
+          min_length = schema.value.min_length
+          max_length = schema.value.max_length
+        }
+      }
+    }
+  }
 }
 
 resource "aws_cognito_user_pool_client" "client" {
