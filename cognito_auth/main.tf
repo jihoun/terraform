@@ -28,10 +28,11 @@ resource "aws_cognito_user_pool" "user_pool" {
   dynamic "schema" {
     for_each = var.schema
     content {
-      name                = schema.value.name
-      attribute_data_type = schema.value.attribute_data_type
-      mutable             = schema.value.mutable
-      required            = schema.value.required
+      name                     = schema.value.name
+      attribute_data_type      = schema.value.attribute_data_type
+      mutable                  = schema.value.mutable
+      required                 = schema.value.required
+      developer_only_attribute = false # prevents drift
 
       dynamic "string_attribute_constraints" {
         for_each = schema.value.attribute_data_type == "String" ? [1] : []
