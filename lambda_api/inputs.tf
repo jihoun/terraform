@@ -112,3 +112,9 @@ variable "enabled" {
   type    = bool
   default = true
 }
+
+variable "encrypt_logs" {
+  type        = bool
+  default     = true
+  description = "Encrypt CloudWatch log group with KMS. Set to false to avoid KMS costs (logs stored unencrypted)."
+}

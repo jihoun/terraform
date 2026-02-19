@@ -112,9 +112,8 @@ locals {
 }
 
 module "log_key" {
-  source = "../log_key"
-
-  enabled        = var.enabled
+  source         = "../log_key"
+  enabled        = var.enabled && var.encrypt_logs
   log_group_name = local.log_group_name
   tags           = local.tags
 }
@@ -124,7 +123,7 @@ resource "aws_cloudwatch_log_group" "log" {
   name              = local.log_group_name
   retention_in_days = var.log_retention
   tags              = local.tags
-  kms_key_id        = module.log_key.key_arn
+  kms_key_id        = var.encrypt_logs ? module.log_key.key_arn : null
 }
 
 resource "aws_api_gateway_method_settings" "general_settings" {
