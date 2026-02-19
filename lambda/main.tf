@@ -92,7 +92,7 @@ locals {
 }
 
 module "log_key" {
-  count          = var.enabled ? 1 : 0
+  count          = var.enabled && var.encrypt_logs ? 1 : 0
   source         = "../log_key"
   log_group_name = local.log_group_name
   tags           = var.tags
@@ -103,7 +103,7 @@ resource "aws_cloudwatch_log_group" "yada" {
   name              = local.log_group_name
   retention_in_days = var.log_retention
   tags              = var.tags
-  kms_key_id        = module.log_key[0].key_arn
+  kms_key_id        = var.encrypt_logs ? module.log_key[0].key_arn : null
 }
 
 data "aws_iam_policy_document" "xray" {

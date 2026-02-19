@@ -47,6 +47,12 @@ variable "log_retention" {
   default = 60
 }
 
+variable "encrypt_logs" {
+  type        = bool
+  default     = true
+  description = "Encrypt CloudWatch log group with KMS. Set to false to avoid KMS costs (logs stored unencrypted)."
+}
+
 variable "trace" {
   type    = bool
   default = false
