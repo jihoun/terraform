@@ -70,7 +70,7 @@ module "method" {
 }
 
 locals {
-  stage_description = var.over_deploy ? "Deployed for sha: ${base64sha256(jsonencode({ api : aws_api_gateway_rest_api.api, method : module.method }))} on ${timestamp()}" : "Deployed for sha: ${base64sha256(jsonencode({ api : aws_api_gateway_rest_api.api, method : module.method }))}"
+  stage_description = var.over_deploy ? "Deployed for sha: ${base64sha256(jsonencode({ api : aws_api_gateway_rest_api.api, method : module.method }))} on ${timestamp()}" : "Deployed for sha: ${base64sha256(jsonencode({ api : aws_api_gateway_rest_api.api, method : module.method, cors: var.cors }))}"
 }
 
 resource "aws_api_gateway_deployment" "deploy" {
