@@ -97,7 +97,7 @@ resource "aws_api_gateway_stage" "stage" {
   client_certificate_id = aws_api_gateway_client_certificate.certificate[0].id
   cache_cluster_enabled = local.cache ? true : null
   cache_cluster_size    = local.cache ? local.cache_size : null
-  depends_on            = [aws_cloudwatch_log_group.log, variable.cognito]
+  depends_on            = [aws_cloudwatch_log_group.log, aws_api_gateway_authorizer.cognito_auth]
   tags                  = local.tags
 }
 
