@@ -92,6 +92,7 @@ variable "over_deploy" {
 variable "vpc_id" {
   type    = string
   default = null
+  description = "VPC ID to deploy the API in. When set the api endpoint will be private."
 }
 
 variable "endpoint_id" {
