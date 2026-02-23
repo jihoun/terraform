@@ -10,3 +10,8 @@ variable "enabled" {
   type    = bool
   default = true
 }
+
+variable "allow_headers" {
+  type = list(string)
+  default = []
+}

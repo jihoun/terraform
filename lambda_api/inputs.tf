@@ -32,6 +32,16 @@ variable "cors" {
   default = true
 }
 
+variable "cors_config" {
+  type = object({
+    allow_headers = optional(list(string))
+    
+  })
+  default = {
+    allow_headers = []
+  }
+}
+
 variable "requires_key" {
   type        = bool
   default     = false
