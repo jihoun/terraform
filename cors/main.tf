@@ -12,6 +12,7 @@ resource "aws_api_gateway_integration" "options" {
   resource_id = var.resource_id
   http_method = "OPTIONS"
   type        = "MOCK"
+  content_handling  = "CONVERT_TO_TEXT"
   request_templates = {
     "application/json" = jsonencode({ statusCode = 200 })
   }
