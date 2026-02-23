@@ -40,7 +40,8 @@ resource "aws_api_gateway_integration_response" "response_200" {
   count       = var.enabled ? 1 : 0
   rest_api_id = var.rest_api_id
   resource_id = var.resource_id
-  http_method = "OPTIONS"
+  http_method = "OPTIONS"  
+  content_handling  = "CONVERT_TO_TEXT"
   status_code = 200
   response_parameters = {
     "method.response.header.Access-Control-Allow-Headers" = "'Content-Type,Authorization,X-Amz-Date,X-Api-Key,X-Amz-Security-Token'"
