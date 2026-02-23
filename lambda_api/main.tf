@@ -53,6 +53,7 @@ module "cors" {
   enabled     = var.cors && var.enabled
   rest_api_id = length(aws_api_gateway_rest_api.api) == 1 ? aws_api_gateway_rest_api.api[0].id : ""
   resource_id = length(aws_api_gateway_resource.proxy) == 1 ? aws_api_gateway_resource.proxy[0].id : ""
+  allow_headers = var.cors_config.allow_headers
 }
 
 module "method" {
