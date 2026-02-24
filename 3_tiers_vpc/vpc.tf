@@ -59,11 +59,8 @@ resource "aws_route_table" "public" {
 }
 
 resource "aws_route_table_association" "public" {
-  for_each = {
-    a = aws_subnet.public["a"].id
-    b = aws_subnet.public["b"].id
-  }
-  subnet_id      = each.value
+  for_each = aws_subnet.public
+  subnet_id      = each.value.id
   route_table_id = aws_route_table.public.id
 }
 
@@ -79,6 +76,29 @@ resource "aws_route_table_association" "private" {
   for_each       = aws_subnet.private
   subnet_id      = each.value.id
   route_table_id = aws_route_table.private[each.key].id
+}
+
+resource "aws_security_group" "vpc_endpoints" {
+  name        = "${var.name}-${terraform.workspace}-vpce"
+  vpc_id      = aws_vpc.main.id
+  description = "Security group for VPC interface endpoints (Secrets Manager, ECR, logs, RDS)"
+
+  ingress {
+    from_port       = 443
+    to_port         = 443
+    protocol        = "tcp"
+    security_groups = [aws_security_group.app.id]
+    description     = "HTTPS from app tier"
+  }
+
+  egress {
+    from_port   = 0
+    to_port     = 0
+    protocol    = "-1"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+
+  tags = merge(var.tags, { Name = "${var.name}-vpce-sg" })
 }
 
 resource "aws_vpc_endpoint" "endpoints" {
