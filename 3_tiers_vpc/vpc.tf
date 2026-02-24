@@ -60,8 +60,8 @@ resource "aws_route_table" "public" {
 
 resource "aws_route_table_association" "public" {
   for_each = {
-    a = aws_subnet.public[a].id
-    b = aws_subnet.public[b].id
+    a = aws_subnet.public["a"].id
+    b = aws_subnet.public["b"].id
   }
   subnet_id      = each.value
   route_table_id = aws_route_table.public.id
