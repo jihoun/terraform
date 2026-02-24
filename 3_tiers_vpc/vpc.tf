@@ -6,52 +6,40 @@ resource "aws_vpc" "main" {
   enable_dns_hostnames = true
 }
 
-resource "aws_subnet" "public_a" {
+resource "aws_subnet" "public" {
+  for_each = {
+    a: "10.0.0.0/20", 
+    b: "10.0.16.0/20"
+  }
   vpc_id            = aws_vpc.main.id
-  cidr_block        = "10.0.0.0/20"
-  availability_zone = "ap-southeast-1a"
+  cidr_block        = each.value
+  availability_zone = "ap-southeast-1${each.key}"
 
   tags = merge(var.tags, {
-    Name = "${var.name}-subnet-public-${data.aws_region.current.region}a"
-  })
-}
-
-resource "aws_subnet" "public_b" {
-  vpc_id            = aws_vpc.main.id
-  cidr_block        = "10.0.16.0/20"
-  availability_zone = "ap-southeast-1b"
-
-  tags = merge(var.tags, {
-    Name = "${var.name}-subnet-public-${data.aws_region.current.region}b"
+    Name = "${var.name}-subnet-public-${data.aws_region.current.region}${each.key}"
   })
 }
 
 locals {
-  public_subnet_ids = [aws_subnet.public_a.id, aws_subnet.public_b.id]
+  public_subnet_ids = [for subnet in aws_subnet.public : subnet.id]
 }
 
-resource "aws_subnet" "private_a" {
+resource "aws_subnet" "private" {
+  for_each = {
+    a: "10.0.128.0/20", 
+    b: "10.0.144.0/20"
+  }
   vpc_id            = aws_vpc.main.id
-  cidr_block        = "10.0.128.0/20"
-  availability_zone = "ap-southeast-1a"
+  cidr_block        = each.value
+  availability_zone = "ap-southeast-1${each.key}"
 
   tags = merge(var.tags, {
-    Name = "${var.name}-subnet-private-${data.aws_region.current.region}a"
-  })
-}
-
-resource "aws_subnet" "private_b" {
-  vpc_id            = aws_vpc.main.id
-  cidr_block        = "10.0.144.0/20"
-  availability_zone = "ap-southeast-1b"
-
-  tags = merge(var.tags, {
-    Name = "${var.name}-subnet-private-${data.aws_region.current.region}b"
+    Name = "${var.name}-subnet-private-${data.aws_region.current.region}${each.key}"
   })
 }
 
 locals {
-  private_subnet_ids = [aws_subnet.private_a.id, aws_subnet.private_b.id]
+  private_subnet_ids = [for subnet in aws_subnet.private : subnet.id]
 }
 
 resource "aws_internet_gateway" "gw" {
@@ -72,35 +60,25 @@ resource "aws_route_table" "public" {
 
 resource "aws_route_table_association" "public" {
   for_each = {
-    a = aws_subnet.public_a.id
-    b = aws_subnet.public_b.id
+    a = aws_subnet.public[a].id
+    b = aws_subnet.public[b].id
   }
   subnet_id      = each.value
   route_table_id = aws_route_table.public.id
 }
 
-resource "aws_route_table" "private_a" {
-  vpc_id = aws_vpc.main.id
+resource "aws_route_table" "private" {
+  for_each = { a = "a", b = "b" }
+  vpc_id   = aws_vpc.main.id
   tags = merge(var.tags, {
-    Name = "${var.name}-rtb-private-${data.aws_region.current.region}a"
+    Name = "${var.name}-rtb-private-${data.aws_region.current.region}${each.value}"
   })
 }
 
-resource "aws_route_table_association" "private_a" {
-  subnet_id      = aws_subnet.private_a.id
-  route_table_id = aws_route_table.private_a.id
-}
-
-resource "aws_route_table" "private_b" {
-  vpc_id = aws_vpc.main.id
-  tags = merge(var.tags, {
-    Name = "${var.name}-rtb-private-${data.aws_region.current.region}b"
-  })
-}
-
-resource "aws_route_table_association" "private_b" {
-  subnet_id      = aws_subnet.private_b.id
-  route_table_id = aws_route_table.private_b.id
+resource "aws_route_table_association" "private" {
+  for_each       = aws_subnet.private
+  subnet_id      = each.value.id
+  route_table_id = aws_route_table.private[each.key].id
 }
 
 resource "aws_vpc_endpoint" "endpoints" {
@@ -133,12 +111,9 @@ resource "aws_vpc_endpoint" "s3" {
 }
 
 resource "aws_vpc_endpoint_route_table_association" "s3" {
-  for_each = {
-    a : aws_route_table.private_a.id
-    b : aws_route_table.private_b.id
-  }
-  vpc_endpoint_id = aws_vpc_endpoint.s3.id
-  route_table_id  = each.value
+  for_each         = aws_route_table.private
+  vpc_endpoint_id  = aws_vpc_endpoint.s3.id
+  route_table_id   = each.value.id
 }
 
 resource "aws_security_group" "public" {
