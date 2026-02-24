@@ -16,7 +16,7 @@ resource "aws_subnet" "public" {
   availability_zone = "ap-southeast-1${each.key}"
 
   tags = merge(var.tags, {
-    Name = "${var.name}-subnet-public-${data.aws_region.current.region}${each.key}"
+    Name = "${var.name}-subnet-public-${data.aws_region.current.id}${each.key}"
   })
 }
 
@@ -34,7 +34,7 @@ resource "aws_subnet" "private" {
   availability_zone = "ap-southeast-1${each.key}"
 
   tags = merge(var.tags, {
-    Name = "${var.name}-subnet-private-${data.aws_region.current.region}${each.key}"
+    Name = "${var.name}-subnet-private-${data.aws_region.current.id}${each.key}"
   })
 }
 
@@ -71,7 +71,7 @@ resource "aws_route_table" "private" {
   for_each = { a = "a", b = "b" }
   vpc_id   = aws_vpc.main.id
   tags = merge(var.tags, {
-    Name = "${var.name}-rtb-private-${data.aws_region.current.region}${each.value}"
+    Name = "${var.name}-rtb-private-${data.aws_region.current.id}${each.value}"
   })
 }
 
@@ -90,9 +90,10 @@ resource "aws_vpc_endpoint" "endpoints" {
     rds            = "rds"
   }
   vpc_id            = aws_vpc.main.id
-  service_name      = "com.amazonaws.${data.aws_region.current.region}.${each.value}"
+  service_name      = "com.amazonaws.${data.aws_region.current.id}.${each.value}"
   vpc_endpoint_type = "Interface"
   subnet_ids        = local.private_subnet_ids
+  security_group_ids = [aws_security_group.vpc_endpoints.id] 
 
   tags = merge(var.tags, {
     "Name" = "${var.name}-vpce-${each.key}"
@@ -103,7 +104,7 @@ resource "aws_vpc_endpoint" "endpoints" {
 
 resource "aws_vpc_endpoint" "s3" {
   vpc_id       = aws_vpc.main.id
-  service_name = "com.amazonaws.${data.aws_region.current.region}.s3"
+  service_name = "com.amazonaws.${data.aws_region.current.id}.s3"
 
   tags = merge(var.tags, {
     "Name" = "${var.name}-vpce-s3"
@@ -169,8 +170,8 @@ resource "aws_security_group" "app" {
   }
   ingress {
     description     = "From load balancer"
-    from_port       = 1337
-    to_port         = 1337
+    from_port       = var.app_port
+    to_port         = var.app_port
     protocol        = "TCP"
     security_groups = [aws_security_group.public.id]
   }
