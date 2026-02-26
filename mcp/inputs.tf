@@ -21,7 +21,7 @@ variable "tags" {
 variable "lambda" {
   type = object({
     dir                        = string
-    handler                    = optional(string, "main.apiHandler")
+    handler                    = optional(string, "main.handler")
     runtime                    = optional(string, "nodejs22.x")
     timeout                    = optional(number, 30)
     memory_size                = optional(number, 128)
