@@ -12,6 +12,7 @@ module "lambda" {
   runtime = var.lambda.runtime
   timeout = var.lambda.timeout
   memory_size = var.lambda.memory_size
+  encrypt_logs = var.encrypt_logs
 
   environment_variables = merge(
     local.mcp_environment_variables,
