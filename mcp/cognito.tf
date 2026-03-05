@@ -21,14 +21,14 @@ resource "aws_cognito_resource_server" "mcp" {
 
 # MCP OAuth confidential client (authorization code flow). Used by Claude, DCR, etc.
 resource "aws_cognito_user_pool_client" "mcp_client" {
-  count  = var.enabled ? 1 : 0
+  count      = var.enabled ? 1 : 0
   depends_on = [aws_cognito_resource_server.mcp]
 
   user_pool_id                         = var.cognito.user_pool_id
   name                                 = "mcp_${terraform.workspace}"
   generate_secret                      = true
   callback_urls                        = var.mcp_callback_urls
-  allowed_oauth_flows                   = ["code"]
+  allowed_oauth_flows                  = ["code"]
   allowed_oauth_flows_user_pool_client = true
   allowed_oauth_scopes                 = ["openid", "email", "profile", "mcp/access"]
   supported_identity_providers         = ["COGNITO"]

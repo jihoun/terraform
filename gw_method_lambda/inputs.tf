@@ -45,3 +45,8 @@ variable "authorization_scopes" {
   default     = []
   description = "List of OAuth scopes required for the method. When non-empty, API Gateway expects an access token and validates these scopes (Cognito). When empty, expects an identity token."
 }
+
+variable "skip_permission" {
+  type    = bool
+  default = false
+}

@@ -12,6 +12,6 @@ variable "enabled" {
 }
 
 variable "allow_headers" {
-  type = list(string)
+  type    = list(string)
   default = []
 }

@@ -49,10 +49,10 @@ resource "aws_api_gateway_resource" "proxy" {
 }
 
 module "cors" {
-  source      = "../cors"
-  enabled     = var.cors && var.enabled
-  rest_api_id = length(aws_api_gateway_rest_api.api) == 1 ? aws_api_gateway_rest_api.api[0].id : ""
-  resource_id = length(aws_api_gateway_resource.proxy) == 1 ? aws_api_gateway_resource.proxy[0].id : ""
+  source        = "../cors"
+  enabled       = var.cors && var.enabled
+  rest_api_id   = length(aws_api_gateway_rest_api.api) == 1 ? aws_api_gateway_rest_api.api[0].id : ""
+  resource_id   = length(aws_api_gateway_resource.proxy) == 1 ? aws_api_gateway_resource.proxy[0].id : ""
   allow_headers = var.cors_config.allow_headers
 }
 
@@ -70,7 +70,7 @@ module "method" {
 }
 
 locals {
-  stage_description = var.over_deploy ? "Deployed for sha: ${base64sha256(jsonencode({ api : aws_api_gateway_rest_api.api, method : module.method }))} on ${timestamp()}" : "Deployed for sha: ${base64sha256(jsonencode({ api : aws_api_gateway_rest_api.api, method : module.method, cors: var.cors }))}"
+  stage_description = var.over_deploy ? "Deployed for sha: ${base64sha256(jsonencode({ api : aws_api_gateway_rest_api.api, method : module.method }))} on ${timestamp()}" : "Deployed for sha: ${base64sha256(jsonencode({ api : aws_api_gateway_rest_api.api, method : module.method, cors : var.cors }))}"
 }
 
 resource "aws_api_gateway_deployment" "deploy" {

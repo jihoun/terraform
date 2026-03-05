@@ -18,8 +18,8 @@ resource "aws_cloudfront_distribution" "mcp" {
   enabled             = true
   is_ipv6_enabled     = true
   comment             = "MCP API for ${var.name}"
-  default_root_object  = ""
-  price_class          = "PriceClass_100"
+  default_root_object = ""
+  price_class         = "PriceClass_100"
 
   aliases = [var.mcp_domain.name]
 
@@ -31,19 +31,19 @@ resource "aws_cloudfront_distribution" "mcp" {
     custom_origin_config {
       http_port              = 80
       https_port             = 443
-      origin_protocol_policy  = "https-only"
-      origin_ssl_protocols    = ["TLSv1.2"]
+      origin_protocol_policy = "https-only"
+      origin_ssl_protocols   = ["TLSv1.2"]
     }
   }
 
   default_cache_behavior {
     allowed_methods          = ["DELETE", "GET", "HEAD", "OPTIONS", "PATCH", "POST", "PUT"]
-    cached_methods            = ["GET", "HEAD", "OPTIONS"]
-    target_origin_id          = "mcp-api-gateway"
-    cache_policy_id           = data.aws_cloudfront_cache_policy.caching_disabled.id
-    origin_request_policy_id  = data.aws_cloudfront_origin_request_policy.all_viewer_except_host.id
-    viewer_protocol_policy    = "redirect-to-https"
-    compress                  = true
+    cached_methods           = ["GET", "HEAD", "OPTIONS"]
+    target_origin_id         = "mcp-api-gateway"
+    cache_policy_id          = data.aws_cloudfront_cache_policy.caching_disabled.id
+    origin_request_policy_id = data.aws_cloudfront_origin_request_policy.all_viewer_except_host.id
+    viewer_protocol_policy   = "redirect-to-https"
+    compress                 = true
   }
 
   restrictions {
@@ -53,9 +53,9 @@ resource "aws_cloudfront_distribution" "mcp" {
   }
 
   viewer_certificate {
-    acm_certificate_arn      = var.mcp_domain.certificate_arn
-    ssl_support_method       = "sni-only"
-    minimum_protocol_version = "TLSv1.2_2021"
+    acm_certificate_arn            = var.mcp_domain.certificate_arn
+    ssl_support_method             = "sni-only"
+    minimum_protocol_version       = "TLSv1.2_2021"
     cloudfront_default_certificate = false
   }
 

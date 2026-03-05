@@ -24,13 +24,13 @@ variable "encrypt_logs" {
 
 variable "lambda" {
   type = object({
-    dir                        = string
-    handler                    = optional(string, "main.handler")
-    runtime                    = optional(string, "nodejs22.x")
-    timeout                    = optional(number, 30)
-    memory_size                = optional(number, 128)
-    subnet_ids                 = optional(list(string))
-    security_group_ids         = optional(list(string))
+    dir                         = string
+    handler                     = optional(string, "main.handler")
+    runtime                     = optional(string, "nodejs22.x")
+    timeout                     = optional(number, 30)
+    memory_size                 = optional(number, 128)
+    subnet_ids                  = optional(list(string))
+    security_group_ids          = optional(list(string))
     extra_environment_variables = optional(map(string), {})
   })
   description = "Lambda configuration. The module creates the Lambda and wires it to the API Gateway."
@@ -38,10 +38,10 @@ variable "lambda" {
 
 variable "cognito" {
   type = object({
-    user_pool_id   = string
-    user_pool_arn  = string
-    domain         = optional(string)
-    domain_prefix  = optional(string)
+    user_pool_id  = string
+    user_pool_arn = string
+    domain        = optional(string)
+    domain_prefix = optional(string)
   })
   description = "Cognito User Pool configuration. user_pool_id: pool where the module creates MCP resource server and OAuth client. user_pool_arn: for API Gateway authorizer. domain: hosted domain host (e.g. xxx.auth.<region>.amazoncognito.com); when null, the module creates aws_cognito_user_pool_domain. Pass domain when the pool already has a domain (one domain per pool). domain_prefix: prefix when creating domain (default: name-mcp-workspace)."
 }

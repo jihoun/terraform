@@ -7,12 +7,12 @@ resource "aws_api_gateway_method" "options" {
 }
 
 resource "aws_api_gateway_integration" "options" {
-  count       = var.enabled ? 1 : 0
-  rest_api_id = var.rest_api_id
-  resource_id = var.resource_id
-  http_method = "OPTIONS"
-  type        = "MOCK"
-  content_handling  = "CONVERT_TO_TEXT"
+  count            = var.enabled ? 1 : 0
+  rest_api_id      = var.rest_api_id
+  resource_id      = var.resource_id
+  http_method      = "OPTIONS"
+  type             = "MOCK"
+  content_handling = "CONVERT_TO_TEXT"
   request_templates = {
     "application/json" = jsonencode({ statusCode = 200 })
   }
@@ -38,15 +38,15 @@ resource "aws_api_gateway_method_response" "response_200" {
 }
 
 locals {
-  allow_headers = concat(["Content-Type", "Authorization", "X-Amz-Date", "X-Api-Key", "X-Amz-Security-Token"], var.allow_headers!=null ? var.allow_headers : [])
+  allow_headers = concat(["Content-Type", "Authorization", "X-Amz-Date", "X-Api-Key", "X-Amz-Security-Token"], var.allow_headers != null ? var.allow_headers : [])
 }
 resource "aws_api_gateway_integration_response" "response_200" {
-  count       = var.enabled ? 1 : 0
-  rest_api_id = var.rest_api_id
-  resource_id = var.resource_id
-  http_method = "OPTIONS"  
-  content_handling  = "CONVERT_TO_TEXT"
-  status_code = 200
+  count            = var.enabled ? 1 : 0
+  rest_api_id      = var.rest_api_id
+  resource_id      = var.resource_id
+  http_method      = "OPTIONS"
+  content_handling = "CONVERT_TO_TEXT"
+  status_code      = 200
   response_parameters = {
     "method.response.header.Access-Control-Allow-Headers" = "'${join(",", local.allow_headers)}'"
     "method.response.header.Access-Control-Allow-Methods" = "'DELETE,GET,HEAD,OPTIONS,PATCH,POST,PUT'"

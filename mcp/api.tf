@@ -8,11 +8,11 @@ resource "aws_api_gateway_rest_api" "api" {
 resource "aws_api_gateway_authorizer" "cognito" {
   count = var.enabled ? 1 : 0
 
-  name             = "${var.name}-cognito-${terraform.workspace}"
-  rest_api_id      = aws_api_gateway_rest_api.api[0].id
-  type             = "COGNITO_USER_POOLS"
-  provider_arns    = [var.cognito.user_pool_arn]
-  identity_source  = "method.request.header.Authorization"
+  name            = "${var.name}-cognito-${terraform.workspace}"
+  rest_api_id     = aws_api_gateway_rest_api.api[0].id
+  type            = "COGNITO_USER_POOLS"
+  provider_arns   = [var.cognito.user_pool_arn]
+  identity_source = "method.request.header.Authorization"
 }
 
 # ############################################################################
@@ -27,7 +27,7 @@ resource "aws_api_gateway_resource" "register" {
 }
 
 module "register" {
-  source = "../gw_method_lambda"
+  source  = "../gw_method_lambda"
   enabled = var.enabled
 
   rest_api_id   = var.enabled ? aws_api_gateway_rest_api.api[0].id : ""
@@ -48,7 +48,7 @@ resource "aws_api_gateway_resource" "health" {
 }
 
 module "health" {
-  source = "../gw_method_lambda"
+  source  = "../gw_method_lambda"
   enabled = var.enabled
 
   rest_api_id   = var.enabled ? aws_api_gateway_rest_api.api[0].id : ""
@@ -56,6 +56,8 @@ module "health" {
   http_method   = "GET"
   authorization = "NONE"
   function_name = local.lambda_function_name
+  # having permission only on one of the endpoints is enough, more creates deployment issues
+  skip_permission = true
 }
 
 # ############################################################################
@@ -70,7 +72,7 @@ resource "aws_api_gateway_resource" "authorize" {
 }
 
 module "authorize" {
-  source = "../gw_method_lambda"
+  source  = "../gw_method_lambda"
   enabled = var.enabled
 
   rest_api_id   = var.enabled ? aws_api_gateway_rest_api.api[0].id : ""
@@ -78,6 +80,8 @@ module "authorize" {
   http_method   = "GET"
   authorization = "NONE"
   function_name = local.lambda_function_name
+  # having permission only on one of the endpoints is enough, more creates deployment issues
+  skip_permission = true
 }
 
 # ############################################################################
@@ -92,7 +96,7 @@ resource "aws_api_gateway_resource" "token" {
 }
 
 module "token" {
-  source = "../gw_method_lambda"
+  source  = "../gw_method_lambda"
   enabled = var.enabled
 
   rest_api_id   = var.enabled ? aws_api_gateway_rest_api.api[0].id : ""
@@ -100,6 +104,8 @@ module "token" {
   http_method   = "POST"
   authorization = "NONE"
   function_name = local.lambda_function_name
+  # having permission only on one of the endpoints is enough, more creates deployment issues
+  skip_permission = true
 }
 
 # ############################################################################
@@ -122,13 +128,15 @@ resource "aws_api_gateway_resource" "oauth_authorization_server" {
 }
 
 module "oauth_authorization_server" {
-  source = "../gw_method_lambda"
+  source  = "../gw_method_lambda"
   enabled = var.enabled
 
   rest_api_id   = var.enabled ? aws_api_gateway_rest_api.api[0].id : ""
   resource_id   = var.enabled ? aws_api_gateway_resource.oauth_authorization_server[0].id : ""
   http_method   = "GET"
   function_name = local.lambda_function_name
+  # having permission only on one of the endpoints is enough, more creates deployment issues
+  skip_permission = true
 }
 
 # ############################################################################
@@ -147,7 +155,7 @@ resource "aws_api_gateway_resource" "mcp" {
 }
 
 module "mcp" {
-  source = "../gw_method_lambda"
+  source  = "../gw_method_lambda"
   enabled = var.enabled
 
   rest_api_id          = var.enabled ? aws_api_gateway_rest_api.api[0].id : ""
@@ -157,6 +165,8 @@ module "mcp" {
   authorizer_id        = var.enabled ? aws_api_gateway_authorizer.cognito[0].id : ""
   authorization_scopes = local.mcp_authorization_scopes
   function_name        = local.lambda_function_name
+  # having permission only on one of the endpoints is enough, more creates deployment issues
+  skip_permission = true
 }
 
 # ############################################################################

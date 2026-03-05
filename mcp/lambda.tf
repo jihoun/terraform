@@ -5,13 +5,13 @@ module "lambda" {
   source = "../lambda"
   count  = var.enabled ? 1 : 0
 
-  name   = "${var.name}_api"
-  dir    = var.lambda.dir
-  tags   = local.tags
-  handler = var.lambda.handler
-  runtime = var.lambda.runtime
-  timeout = var.lambda.timeout
-  memory_size = var.lambda.memory_size
+  name         = "${var.name}_api"
+  dir          = var.lambda.dir
+  tags         = local.tags
+  handler      = var.lambda.handler
+  runtime      = var.lambda.runtime
+  timeout      = var.lambda.timeout
+  memory_size  = var.lambda.memory_size
   encrypt_logs = var.encrypt_logs
 
   environment_variables = merge(
@@ -25,7 +25,7 @@ module "lambda" {
 
 locals {
   mcp_environment_variables = var.enabled ? {
-    MCP_OAUTH_CLIENT_ID            = aws_cognito_user_pool_client.mcp_client[0].id
+    MCP_OAUTH_CLIENT_ID             = aws_cognito_user_pool_client.mcp_client[0].id
     MCP_OAUTH_SECRET_NAME           = aws_secretsmanager_secret.mcp_oauth_client_secret[0].name
     MCP_OAUTH_ALLOWED_REDIRECT_URIS = join(",", var.mcp_callback_urls)
     MCP_OAUTH_COGNITO_DOMAIN        = local.cognito_domain_host

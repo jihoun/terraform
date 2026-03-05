@@ -8,8 +8,8 @@ resource "aws_vpc" "main" {
 
 resource "aws_subnet" "public" {
   for_each = {
-    a: "10.0.0.0/20", 
-    b: "10.0.16.0/20"
+    a : "10.0.0.0/20",
+    b : "10.0.16.0/20"
   }
   vpc_id            = aws_vpc.main.id
   cidr_block        = each.value
@@ -26,8 +26,8 @@ locals {
 
 resource "aws_subnet" "private" {
   for_each = {
-    a: "10.0.128.0/20", 
-    b: "10.0.144.0/20"
+    a : "10.0.128.0/20",
+    b : "10.0.144.0/20"
   }
   vpc_id            = aws_vpc.main.id
   cidr_block        = each.value
@@ -59,7 +59,7 @@ resource "aws_route_table" "public" {
 }
 
 resource "aws_route_table_association" "public" {
-  for_each = aws_subnet.public
+  for_each       = aws_subnet.public
   subnet_id      = each.value.id
   route_table_id = aws_route_table.public.id
 }
@@ -109,11 +109,11 @@ resource "aws_vpc_endpoint" "endpoints" {
     logs           = "logs"
     rds            = "rds"
   }
-  vpc_id            = aws_vpc.main.id
-  service_name      = "com.amazonaws.${data.aws_region.current.id}.${each.value}"
-  vpc_endpoint_type = "Interface"
-  subnet_ids        = local.private_subnet_ids
-  security_group_ids = [aws_security_group.vpc_endpoints.id] 
+  vpc_id             = aws_vpc.main.id
+  service_name       = "com.amazonaws.${data.aws_region.current.id}.${each.value}"
+  vpc_endpoint_type  = "Interface"
+  subnet_ids         = local.private_subnet_ids
+  security_group_ids = [aws_security_group.vpc_endpoints.id]
 
   tags = merge(var.tags, {
     "Name" = "${var.name}-vpce-${each.key}"
@@ -132,9 +132,9 @@ resource "aws_vpc_endpoint" "s3" {
 }
 
 resource "aws_vpc_endpoint_route_table_association" "s3" {
-  for_each         = aws_route_table.private
-  vpc_endpoint_id  = aws_vpc_endpoint.s3.id
-  route_table_id   = each.value.id
+  for_each        = aws_route_table.private
+  vpc_endpoint_id = aws_vpc_endpoint.s3.id
+  route_table_id  = each.value.id
 }
 
 resource "aws_security_group" "public" {

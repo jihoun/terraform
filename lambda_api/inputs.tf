@@ -35,7 +35,7 @@ variable "cors" {
 variable "cors_config" {
   type = object({
     allow_headers = optional(list(string))
-    
+
   })
   default = {
     allow_headers = []
@@ -100,8 +100,8 @@ variable "over_deploy" {
 }
 
 variable "vpc_id" {
-  type    = string
-  default = null
+  type        = string
+  default     = null
   description = "VPC ID to deploy the API in. When set the api endpoint will be private."
 }
 
