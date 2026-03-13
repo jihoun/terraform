@@ -22,6 +22,6 @@ variable "tags" {
 
 variable "instance_type" {
   type        = string
-  default     = "t4g.nano"
+  default     = "t3.nano"
   description = "EC2 instance type for the jump host"
 }
