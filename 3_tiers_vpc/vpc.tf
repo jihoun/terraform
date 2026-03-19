@@ -180,31 +180,41 @@ resource "aws_security_group" "app" {
   vpc_id      = aws_vpc.main.id
   tags        = merge(var.tags, { Name = "${var.name}-app" })
   description = "App security group for ${var.name}"
+  # Rules are managed via aws_security_group_rule so that other modules (e.g. umami)
+  # can add rules to this SG without Terraform planning to remove them every run.
+}
 
-  ingress {
-    description = "From self"
-    from_port   = 0
-    to_port     = 0
-    protocol    = "-1"
-    self        = true
-  }
-  ingress {
-    description     = "From load balancer"
-    from_port       = var.app_port
-    to_port         = var.app_port
-    protocol        = "TCP"
-    security_groups = [aws_security_group.public.id]
-  }
-  egress {
-    from_port = 0
-    to_port   = 0
-    protocol  = "-1"
-    #tfsec:ignore:aws-ec2-no-public-egress-sgr
-    cidr_blocks = ["0.0.0.0/0"]
-    #tfsec:ignore:aws-ec2-no-public-egress-sgr
-    ipv6_cidr_blocks = ["::/0"]
-    description      = "Outgoing requests"
-  }
+resource "aws_security_group_rule" "app_self" {
+  type              = "ingress"
+  security_group_id = aws_security_group.app.id
+  from_port         = 0
+  to_port           = 0
+  protocol          = "-1"
+  self              = true
+  description       = "From self"
+}
+
+resource "aws_security_group_rule" "app_from_lb" {
+  type                     = "ingress"
+  security_group_id         = aws_security_group.app.id
+  from_port                = var.app_port
+  to_port                  = var.app_port
+  protocol                 = "tcp"
+  source_security_group_id = aws_security_group.public.id
+  description              = "From load balancer"
+}
+
+resource "aws_security_group_rule" "app_egress" {
+  type              = "egress"
+  security_group_id = aws_security_group.app.id
+  from_port         = 0
+  to_port           = 0
+  protocol          = "-1"
+  #tfsec:ignore:aws-ec2-no-public-egress-sgr
+  cidr_blocks = ["0.0.0.0/0"]
+  #tfsec:ignore:aws-ec2-no-public-egress-sgr
+  ipv6_cidr_blocks = ["::/0"]
+  description = "Outgoing requests"
 }
 
 resource "aws_security_group" "db" {
