@@ -14,3 +14,8 @@ variable "tags" {
   type    = map(string)
   default = {}
 }
+
+variable "with_ecr" {
+  type    = bool
+  default = true
+}

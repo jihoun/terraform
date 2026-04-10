@@ -102,13 +102,17 @@ resource "aws_security_group" "vpc_endpoints" {
 }
 
 resource "aws_vpc_endpoint" "endpoints" {
-  for_each = {
-    ecr            = "ecr.dkr"
-    ecr-api        = "ecr.api"
-    secretsmanager = "secretsmanager"
-    logs           = "logs"
-    rds            = "rds"
-  }
+  for_each = merge(
+    var.with_ecr ? {
+      ecr     = "ecr.dkr"
+      ecr-api = "ecr.api"
+    } : {},
+    {
+      secretsmanager = "secretsmanager"
+      logs           = "logs"
+      rds            = "rds"
+    }
+  )
   vpc_id             = aws_vpc.main.id
   service_name       = "com.amazonaws.${data.aws_region.current.id}.${each.value}"
   vpc_endpoint_type  = "Interface"
@@ -196,7 +200,7 @@ resource "aws_security_group_rule" "app_self" {
 
 resource "aws_security_group_rule" "app_from_lb" {
   type                     = "ingress"
-  security_group_id         = aws_security_group.app.id
+  security_group_id        = aws_security_group.app.id
   from_port                = var.app_port
   to_port                  = var.app_port
   protocol                 = "tcp"
@@ -214,7 +218,7 @@ resource "aws_security_group_rule" "app_egress" {
   cidr_blocks = ["0.0.0.0/0"]
   #tfsec:ignore:aws-ec2-no-public-egress-sgr
   ipv6_cidr_blocks = ["::/0"]
-  description = "Outgoing requests"
+  description      = "Outgoing requests"
 }
 
 resource "aws_security_group" "db" {
