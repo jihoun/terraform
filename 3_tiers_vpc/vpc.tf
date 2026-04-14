@@ -194,10 +194,8 @@ resource "aws_security_group" "app" {
 resource "aws_vpc_security_group_ingress_rule" "app_self" {
   security_group_id = aws_security_group.app.id
   description       = "From self"
-  ip_protocol       = "-1"
-  from_port         = 0
-  to_port           = 0
-
+  # All protocols: do not set from_port/to_port — AWS rejects "all protocols" with 0–0 ports.
+  ip_protocol = "-1"
   referenced_security_group_id = aws_security_group.app.id
 }
 
@@ -215,8 +213,6 @@ resource "aws_vpc_security_group_egress_rule" "app_egress_ipv4" {
   security_group_id = aws_security_group.app.id
   description       = "Outgoing requests (IPv4)"
   ip_protocol       = "-1"
-  from_port         = 0
-  to_port           = 0
   #tfsec:ignore:aws-ec2-no-public-egress-sgr
   cidr_ipv4 = "0.0.0.0/0"
 }
@@ -225,8 +221,6 @@ resource "aws_vpc_security_group_egress_rule" "app_egress_ipv6" {
   security_group_id = aws_security_group.app.id
   description       = "Outgoing requests (IPv6)"
   ip_protocol       = "-1"
-  from_port         = 0
-  to_port           = 0
   #tfsec:ignore:aws-ec2-no-public-egress-sgr
   cidr_ipv6 = "::/0"
 }
