@@ -27,6 +27,8 @@ data "aws_region" "current" {}
 # -----------------------------------------------------------------------------
 
 resource "aws_security_group" "ssm_endpoints" {
+  count = var.enabled ? 1 : 0
+
   name        = "${var.name}-${terraform.workspace}-vpce-ssm"
   description = "Allow HTTPS from SSM jump to SSM/ssmmessages/ec2messages endpoints"
   vpc_id      = data.aws_subnet.jump.vpc_id
@@ -50,16 +52,16 @@ resource "aws_security_group" "ssm_endpoints" {
 }
 
 resource "aws_vpc_endpoint" "endpoints" {
-  for_each = {
+  for_each = var.enabled ? {
     ssm         = "ssm"
     ssmessages  = "ssmmessages"
     ec2messages = "ec2messages"
-  }
+  }:{}
   vpc_id              = data.aws_subnet.jump.vpc_id
   service_name        = "com.amazonaws.${data.aws_region.current.id}.${each.value}"
   vpc_endpoint_type   = "Interface"
   subnet_ids          = [var.subnet_id]
-  security_group_ids  = [aws_security_group.ssm_endpoints.id]
+  security_group_ids  = [aws_security_group.ssm_endpoints[0].id]
   private_dns_enabled = true
   tags                = merge(var.tags, { Name = "${var.name}-${terraform.workspace}-vpce-${each.key}" })
 }
@@ -69,6 +71,8 @@ resource "aws_vpc_endpoint" "endpoints" {
 # -----------------------------------------------------------------------------
 
 resource "aws_iam_role" "ssm_jump" {
+  count = var.enabled ? 1 : 0
+
   name = local.name
 
   assume_role_policy = jsonencode({
@@ -88,13 +92,17 @@ resource "aws_iam_role" "ssm_jump" {
 }
 
 resource "aws_iam_role_policy_attachment" "ssm_jump" {
-  role       = aws_iam_role.ssm_jump.name
+  count = var.enabled ? 1 : 0
+
+  role       = aws_iam_role.ssm_jump[0].name
   policy_arn = "arn:aws:iam::aws:policy/AmazonSSMManagedInstanceCore"
 }
 
 resource "aws_iam_instance_profile" "ssm_jump" {
+  count = var.enabled ? 1 : 0
+  
   name = local.name
-  role = aws_iam_role.ssm_jump.name
+  role = aws_iam_role.ssm_jump[0].name
   tags = local.tags
 }
 
@@ -119,10 +127,12 @@ data "aws_ami" "ssm_jump" {
 }
 
 resource "aws_instance" "ssm_jump" {
+  count = var.enabled ? 1 : 0
+  
   ami                    = data.aws_ami.ssm_jump.id
   instance_type          = var.instance_type
   subnet_id              = var.subnet_id
   vpc_security_group_ids = var.security_group_ids
-  iam_instance_profile   = aws_iam_instance_profile.ssm_jump.name
+  iam_instance_profile   = aws_iam_instance_profile.ssm_jump[0].name
   tags                   = local.tags
 }

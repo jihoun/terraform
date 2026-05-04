@@ -4,6 +4,12 @@ variable "name" {
   description = "Prefix for resource names (e.g. project or service name)"
 }
 
+variable "enabled" {
+  type        = bool
+  default     = true
+  description = "Whether to enable the SSM jump host"
+}
+
 variable "subnet_id" {
   type        = string
   description = "Subnet ID for the jump instance (e.g. private app subnet)"
