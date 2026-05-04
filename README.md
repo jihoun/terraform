@@ -43,3 +43,6 @@ Can be added to any account. It creates cloud watch alarm for monitoring all acc
 
 ## s3
 Deploys a secured s3 bucket following recommended best practices.
+
+## nat_execute_api
+Creates an **execute-api** interface VPC endpoint (API Gateway PrivateLink) and a small **EC2 NAT instance** with Elastic IP and default `0.0.0.0/0` routes from app subnets via the instance ENI—useful when private workloads need API Gateway without a NAT Gateway, and a subset still needs public internet (e.g. Cognito OAuth hostnames).
