@@ -11,7 +11,7 @@ terraform {
 resource "aws_s3_bucket" "bucket" {
   count = var.enabled ? 1 : 0
 
-  bucket_prefix = "${var.name}-${terraform.workspace}"
+  bucket_prefix = substr("${var.name}-${terraform.workspace}", 0, 37)
   tags          = var.tags
   region        = var.region
 }
