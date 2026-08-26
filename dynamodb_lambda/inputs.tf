@@ -24,3 +24,8 @@ variable "enabled" {
   type    = bool
   default = true
 }
+
+variable "maximum_record_age_in_seconds" {
+  type    = number
+  default = -1 # no maximum age
+}

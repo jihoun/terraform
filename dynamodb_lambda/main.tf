@@ -34,4 +34,5 @@ resource "aws_lambda_event_source_mapping" "stream_2_lambda" {
   function_response_types            = var.reports_errors ? ["ReportBatchItemFailures"] : null
   starting_position                  = "LATEST"
   bisect_batch_on_function_error     = true
+  maximum_record_age_in_seconds      = var.maximum_record_age_in_seconds
 }
