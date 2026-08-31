@@ -16,7 +16,7 @@ resource "aws_subnet" "public" {
   availability_zone = "ap-southeast-1${each.key}"
 
   tags = merge(var.tags, {
-    Name = "${var.name}-subnet-public-${data.aws_region.current.id}${each.key}"
+    Name = "${var.name}-subnet-public-${data.aws_region.current.region}${each.key}"
   })
 }
 
