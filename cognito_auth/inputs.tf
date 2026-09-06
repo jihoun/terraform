@@ -25,36 +25,30 @@ variable "schema" {
   default = []
 }
 
-variable "invite_email_subject" {
-  description = "Optional custom invitation email subject. Must be set together with invite_email_message. Used as the known toggle for the invite template block so the message can be a computed token."
-  type        = string
-  default     = null
-}
-
-variable "invite_email_message" {
-  description = "Optional custom invitation email HTML. Must include {username} and {####}. Must be set together with invite_email_subject."
-  type        = string
-  default     = null
+variable "invite_email" {
+  description = "Optional custom invitation email. Message must include {username} and {####}."
+  type = object({
+    subject = string
+    message = string
+  })
+  default = null
 
   validation {
-    condition     = var.invite_email_message == null || (strcontains(var.invite_email_message, "{username}") && strcontains(var.invite_email_message, "{####}"))
-    error_message = "invite_email_message must contain {username} and {####}."
+    condition     = var.invite_email == null || (strcontains(var.invite_email.message, "{username}") && strcontains(var.invite_email.message, "{####}"))
+    error_message = "invite_email.message must contain {username} and {####}."
   }
 }
 
-variable "verification_email_subject" {
-  description = "Optional custom verification/forgot-password email subject. Must be set together with verification_email_message. Used as the known toggle for the verification template block so the message can be a computed token."
-  type        = string
-  default     = null
-}
-
-variable "verification_email_message" {
-  description = "Optional custom verification/forgot-password email HTML. Must include {####}. Must be set together with verification_email_subject."
-  type        = string
-  default     = null
+variable "verification_email" {
+  description = "Optional custom verification/forgot-password email. Message must include {####}."
+  type = object({
+    subject = string
+    message = string
+  })
+  default = null
 
   validation {
-    condition     = var.verification_email_message == null || strcontains(var.verification_email_message, "{####}")
-    error_message = "verification_email_message must contain {####}."
+    condition     = var.verification_email == null || strcontains(var.verification_email.message, "{####}")
+    error_message = "verification_email.message must contain {####}."
   }
 }

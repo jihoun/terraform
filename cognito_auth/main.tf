@@ -44,34 +44,22 @@ resource "aws_cognito_user_pool" "user_pool" {
     }
   }
 
-  # Toggle on the static subject so for_each stays known when the HTML body is a computed token (e.g. CloudFront URL splice).
   dynamic "admin_create_user_config" {
-    for_each = var.invite_email_subject != null ? [1] : []
+    for_each = var.invite_email != null ? [1] : []
     content {
       invite_message_template {
-        email_subject = var.invite_email_subject
-        email_message = var.invite_email_message
+        email_subject = try(var.invite_email.subject, null)
+        email_message = try(var.invite_email.message, null)
       }
     }
   }
 
   dynamic "verification_message_template" {
-    for_each = var.verification_email_subject != null ? [1] : []
+    for_each = var.verification_email != null ? [1] : []
     content {
       default_email_option = "CONFIRM_WITH_CODE"
-      email_subject        = var.verification_email_subject
-      email_message        = var.verification_email_message
-    }
-  }
-
-  lifecycle {
-    precondition {
-      condition     = (var.invite_email_message == null) == (var.invite_email_subject == null)
-      error_message = "invite_email_subject and invite_email_message must both be set or both omitted."
-    }
-    precondition {
-      condition     = (var.verification_email_message == null) == (var.verification_email_subject == null)
-      error_message = "verification_email_subject and verification_email_message must both be set or both omitted."
+      email_subject        = try(var.verification_email.subject, null)
+      email_message        = try(var.verification_email.message, null)
     }
   }
 }
