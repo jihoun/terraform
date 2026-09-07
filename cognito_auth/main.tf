@@ -50,6 +50,8 @@ resource "aws_cognito_user_pool" "user_pool" {
       invite_message_template {
         email_subject = try(var.invite_email.subject, null)
         email_message = try(var.invite_email.message, null)
+        # Cognito requires SMS text whenever this block is set.
+        sms_message   = "Your username is {username} and temporary password is {####}."
       }
     }
   }
