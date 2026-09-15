@@ -51,7 +51,7 @@ resource "aws_cognito_user_pool" "user_pool" {
         email_subject = try(var.invite_email.subject, null)
         email_message = try(var.invite_email.message, null)
         # Cognito requires SMS text whenever this block is set.
-        sms_message   = "Your username is {username} and temporary password is {####}."
+        sms_message = "Your username is {username} and temporary password is {####}."
       }
     }
   }
@@ -62,6 +62,15 @@ resource "aws_cognito_user_pool" "user_pool" {
       default_email_option = "CONFIRM_WITH_CODE"
       email_subject        = try(var.verification_email.subject, null)
       email_message        = try(var.verification_email.message, null)
+    }
+  }
+
+  dynamic "email_configuration" {
+    for_each = var.email_configuration != null ? [var.email_configuration] : []
+    content {
+      email_sending_account = "DEVELOPER"
+      from_email_address    = email_configuration.value.from_email_address
+      source_arn            = email_configuration.value.source_arn
     }
   }
 }

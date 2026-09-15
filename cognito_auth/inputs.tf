@@ -52,3 +52,12 @@ variable "verification_email" {
     error_message = "verification_email.message must contain {####}."
   }
 }
+
+variable "email_configuration" {
+  description = "Optional SES From address. When null, Cognito uses its default sender."
+  type = object({
+    from_email_address = string
+    source_arn         = string
+  })
+  default = null
+}
