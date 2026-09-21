@@ -49,3 +49,26 @@ variable "region" {
   default     = null
   description = "Region to create the S3 bucket in. If not provided, will use the default region."
 }
+
+variable "sse_algorithm" {
+  type        = string
+  default     = "AES256"
+  description = "Default bucket encryption algorithm (AES256 or aws:kms)."
+
+  validation {
+    condition     = contains(["AES256", "aws:kms"], var.sse_algorithm)
+    error_message = "sse_algorithm must be AES256 or aws:kms."
+  }
+}
+
+variable "kms_master_key_id" {
+  type        = string
+  default     = null
+  description = "Optional CMK for SSE-KMS. Null uses the AWS managed aws/s3 key."
+}
+
+variable "bucket_key_enabled" {
+  type        = bool
+  default     = null
+  description = "Enable S3 Bucket Key. Defaults to true when sse_algorithm is aws:kms, otherwise false."
+}
