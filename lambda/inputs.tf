@@ -1,6 +1,6 @@
 variable "name" {
   type        = string
-  description = "Logical name. Combined with `_${terraform.workspace}` and truncated to 64 characters for function_name."
+  description = "Logical name. Combined with the terraform workspace and truncated to 64 characters for function_name."
 }
 
 variable "dir" {
