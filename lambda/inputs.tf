@@ -1,5 +1,6 @@
 variable "name" {
-  type = string
+  type        = string
+  description = "Logical name. Combined with `_${terraform.workspace}` and truncated to 64 characters for function_name."
 }
 
 variable "dir" {

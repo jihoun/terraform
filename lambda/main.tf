@@ -12,7 +12,12 @@ terraform {
 }
 
 locals {
-  name = "${var.name}_${terraform.workspace}"
+  # AWS Lambda function_name max is 64. Keep `_${workspace}` and trim the
+  # logical name from the end so env/region prefixes stay intact.
+  function_name_max = 64
+  workspace_suffix  = "_${terraform.workspace}"
+  name_budget       = max(0, local.function_name_max - length(local.workspace_suffix))
+  name              = "${substr(var.name, 0, local.name_budget)}${local.workspace_suffix}"
 }
 
 data "aws_region" "current" {}
