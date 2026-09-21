@@ -22,8 +22,10 @@ resource "aws_s3_bucket_server_side_encryption_configuration" "sse" {
   bucket = aws_s3_bucket.bucket[0].id
   region = var.region
   rule {
+    bucket_key_enabled = coalesce(var.bucket_key_enabled, var.sse_algorithm == "aws:kms")
     apply_server_side_encryption_by_default {
-      sse_algorithm = "AES256"
+      sse_algorithm     = var.sse_algorithm
+      kms_master_key_id = var.sse_algorithm == "aws:kms" ? var.kms_master_key_id : null
     }
   }
 }
