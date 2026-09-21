@@ -1,3 +1,12 @@
+terraform {
+  required_providers {
+    aws = {
+      source  = "hashicorp/aws"
+      version = ">= 4.31.0"
+    }
+  }
+}
+
 resource "aws_cloudwatch_event_rule" "cron" {
   count               = var.enabled ? 1 : 0
   name                = "${var.name}_${terraform.workspace}"

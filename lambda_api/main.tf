@@ -1,3 +1,12 @@
+terraform {
+  required_providers {
+    aws = {
+      source  = "hashicorp/aws"
+      version = ">= 4.31.0"
+    }
+  }
+}
+
 locals {
   cache      = var.cache_size != null || var.cache_ttl != null
   cache_ttl  = var.cache_ttl != null ? var.cache_ttl : 300

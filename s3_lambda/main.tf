@@ -1,3 +1,12 @@
+terraform {
+  required_providers {
+    aws = {
+      source  = "hashicorp/aws"
+      version = ">= 4.31.0"
+    }
+  }
+}
+
 resource "aws_lambda_permission" "allow_bucket" {
   for_each            = var.enabled ? var.events : {}
   statement_id_prefix = "AllowExecutionFromS3Bucket"
