@@ -8,11 +8,12 @@ module "terraform_bucket" {
 }
 
 resource "aws_dynamodb_table" "terraform" {
-  count        = var.enabled ? 1 : 0
-  name         = "terraform-${terraform.workspace}"
-  billing_mode = "PAY_PER_REQUEST"
-  hash_key     = "LockID"
-  tags         = var.tags
+  count                       = var.enabled ? 1 : 0
+  name                        = "terraform-${terraform.workspace}"
+  billing_mode                = "PAY_PER_REQUEST"
+  hash_key                    = "LockID"
+  deletion_protection_enabled = true
+  tags                        = var.tags
 
   server_side_encryption {
     enabled = true
