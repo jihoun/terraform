@@ -80,9 +80,15 @@ resource "aws_cognito_user_pool_client" "client" {
   user_pool_id                  = aws_cognito_user_pool.user_pool[0].id
   name                          = "${var.name}_${terraform.workspace}"
   explicit_auth_flows           = ["ALLOW_REFRESH_TOKEN_AUTH", "ALLOW_USER_SRP_AUTH"]
-  refresh_token_validity        = 7
+  refresh_token_validity        = var.refresh_token_validity
+  access_token_validity         = var.access_token_validity
+  id_token_validity             = var.id_token_validity
   prevent_user_existence_errors = "ENABLED"
-  token_validity_units { refresh_token = "days" }
+  token_validity_units {
+    refresh_token = var.token_validity_units.refresh_token
+    access_token  = var.token_validity_units.access_token
+    id_token      = var.token_validity_units.id_token
+  }
 }
 
 resource "aws_cognito_identity_pool" "id_pool" {

@@ -61,3 +61,44 @@ variable "email_configuration" {
   })
   default = null
 }
+
+variable "refresh_token_validity" {
+  type        = number
+  default     = 7
+  description = "Refresh token lifetime. Unit is token_validity_units.refresh_token. Cognito allows 60 minutes to 10 years."
+}
+
+variable "access_token_validity" {
+  type        = number
+  default     = 1
+  description = "Access token lifetime. Unit is token_validity_units.access_token. Cognito allows 5 minutes to 24 hours."
+}
+
+variable "id_token_validity" {
+  type        = number
+  default     = 1
+  description = "ID token lifetime. Unit is token_validity_units.id_token. Cognito allows 5 minutes to 24 hours."
+}
+
+variable "token_validity_units" {
+  description = "Units for refresh, access, and ID token validity. Each value is seconds, minutes, hours, or days."
+  type = object({
+    refresh_token = string
+    access_token  = string
+    id_token      = string
+  })
+  default = {
+    refresh_token = "days"
+    access_token  = "hours"
+    id_token      = "hours"
+  }
+
+  validation {
+    condition = alltrue([
+      contains(["seconds", "minutes", "hours", "days"], var.token_validity_units.refresh_token),
+      contains(["seconds", "minutes", "hours", "days"], var.token_validity_units.access_token),
+      contains(["seconds", "minutes", "hours", "days"], var.token_validity_units.id_token),
+    ])
+    error_message = "token_validity_units values must be seconds, minutes, hours, or days."
+  }
+}
