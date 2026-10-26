@@ -68,7 +68,7 @@ resource "aws_route_table" "private" {
   for_each = { a = "a", b = "b" }
   vpc_id   = aws_vpc.main.id
   tags = merge(var.tags, {
-    Name = "${var.name}-rtb-private-${data.aws_region.current.id}${each.value}"
+    Name = "${var.name}-rtb-private-${data.aws_region.current.region}${each.value}"
   })
 }
 
