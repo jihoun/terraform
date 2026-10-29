@@ -102,3 +102,39 @@ variable "token_validity_units" {
     error_message = "token_validity_units values must be seconds, minutes, hours, or days."
   }
 }
+
+variable "user_pool_tier" {
+  description = "Cognito feature plan (LITE, ESSENTIALS, PLUS). Null keeps the AWS default (Essentials)."
+  type        = string
+  default     = null
+
+  validation {
+    condition     = var.user_pool_tier == null || contains(["LITE", "ESSENTIALS", "PLUS"], var.user_pool_tier)
+    error_message = "user_pool_tier must be LITE, ESSENTIALS, or PLUS."
+  }
+}
+
+variable "user_pool_add_ons" {
+  description = "Threat protection settings. Null keeps prior behavior (no add-ons block). Threat protection requires user_pool_tier = PLUS."
+  type = object({
+    advanced_security_mode = string
+    custom_auth_mode       = optional(string)
+  })
+  default = null
+
+  validation {
+    condition = var.user_pool_add_ons == null || contains(
+      ["OFF", "AUDIT", "ENFORCED"],
+      var.user_pool_add_ons.advanced_security_mode,
+    )
+    error_message = "user_pool_add_ons.advanced_security_mode must be OFF, AUDIT, or ENFORCED."
+  }
+
+  validation {
+    condition = var.user_pool_add_ons == null || try(var.user_pool_add_ons.custom_auth_mode, null) == null || contains(
+      ["AUDIT", "ENFORCED"],
+      var.user_pool_add_ons.custom_auth_mode,
+    )
+    error_message = "user_pool_add_ons.custom_auth_mode must be AUDIT or ENFORCED."
+  }
+}

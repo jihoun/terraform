@@ -11,14 +11,19 @@ resource "aws_cognito_user_pool" "user_pool" {
   tags                     = local.tags
   auto_verified_attributes = ["email"]
   mfa_configuration        = "OPTIONAL"
-  # Threat protection (Security Hub Cognito.1 / Cognito.4) requires Plus.
-  user_pool_tier           = "PLUS"
+  user_pool_tier           = var.user_pool_tier
 
-  user_pool_add_ons {
-    advanced_security_mode = "ENFORCED"
+  dynamic "user_pool_add_ons" {
+    for_each = var.user_pool_add_ons != null ? [var.user_pool_add_ons] : []
+    content {
+      advanced_security_mode = user_pool_add_ons.value.advanced_security_mode
 
-    advanced_security_additional_flows {
-      custom_auth_mode = "ENFORCED"
+      dynamic "advanced_security_additional_flows" {
+        for_each = try(user_pool_add_ons.value.custom_auth_mode, null) != null ? [1] : []
+        content {
+          custom_auth_mode = user_pool_add_ons.value.custom_auth_mode
+        }
+      }
     }
   }
 
