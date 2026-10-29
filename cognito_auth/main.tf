@@ -11,6 +11,16 @@ resource "aws_cognito_user_pool" "user_pool" {
   tags                     = local.tags
   auto_verified_attributes = ["email"]
   mfa_configuration        = "OPTIONAL"
+  # Threat protection (Security Hub Cognito.1 / Cognito.4) requires Plus.
+  user_pool_tier           = "PLUS"
+
+  user_pool_add_ons {
+    advanced_security_mode = "ENFORCED"
+
+    advanced_security_additional_flows {
+      custom_auth_mode = "ENFORCED"
+    }
+  }
 
   software_token_mfa_configuration {
     enabled = true
