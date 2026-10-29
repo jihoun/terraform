@@ -72,3 +72,16 @@ variable "bucket_key_enabled" {
   default     = null
   description = "Enable S3 Bucket Key. Defaults to true when sse_algorithm is aws:kms, otherwise false."
 }
+
+variable "blocked_encryption_types" {
+  type        = list(string)
+  default     = ["SSE-C"]
+  description = "Encryption types blocked for object uploads. Defaults to SSE-C to match the AWS S3 default."
+
+  validation {
+    condition = alltrue([
+      for t in var.blocked_encryption_types : contains(["SSE-C", "NONE"], t)
+    ])
+    error_message = "blocked_encryption_types values must be SSE-C or NONE."
+  }
+}

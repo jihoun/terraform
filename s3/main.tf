@@ -22,7 +22,9 @@ resource "aws_s3_bucket_server_side_encryption_configuration" "sse" {
   bucket = aws_s3_bucket.bucket[0].id
   region = var.region
   rule {
-    bucket_key_enabled = coalesce(var.bucket_key_enabled, var.sse_algorithm == "aws:kms")
+    bucket_key_enabled       = coalesce(var.bucket_key_enabled, var.sse_algorithm == "aws:kms")
+    # Match AWS default (SSE-C blocked for general-purpose buckets) to avoid perpetual plan drift.
+    blocked_encryption_types = var.blocked_encryption_types
     apply_server_side_encryption_by_default {
       sse_algorithm     = var.sse_algorithm
       kms_master_key_id = var.sse_algorithm == "aws:kms" ? var.kms_master_key_id : null
