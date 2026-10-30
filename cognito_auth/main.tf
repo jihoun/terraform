@@ -10,7 +10,7 @@ resource "aws_cognito_user_pool" "user_pool" {
   deletion_protection      = "ACTIVE"
   tags                     = local.tags
   auto_verified_attributes = ["email"]
-  mfa_configuration        = "OPTIONAL"
+  mfa_configuration        = var.mfa_configuration
   user_pool_tier           = var.user_pool_tier
 
   dynamic "user_pool_add_ons" {

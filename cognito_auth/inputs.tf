@@ -103,6 +103,17 @@ variable "token_validity_units" {
   }
 }
 
+variable "mfa_configuration" {
+  description = "User pool MFA setting. OFF disables MFA, OPTIONAL lets users enroll, ON requires software-token MFA at sign-in."
+  type        = string
+  default     = "OPTIONAL"
+
+  validation {
+    condition     = contains(["OFF", "ON", "OPTIONAL"], var.mfa_configuration)
+    error_message = "mfa_configuration must be OFF, ON, or OPTIONAL."
+  }
+}
+
 variable "user_pool_tier" {
   description = "Cognito feature plan (LITE, ESSENTIALS, PLUS). Null keeps the AWS default (Essentials)."
   type        = string
